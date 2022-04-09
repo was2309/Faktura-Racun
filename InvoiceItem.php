@@ -7,10 +7,27 @@ class InvoiceItem
     private $quantity;
 
 
-    public function __construct($faktura)
+    public function __construct($invoice)
     {
-        $this->invoice = $faktura;
+        $this->invoice=$invoice;
     }
+
+
+
+
+//    public function __serialize(): array
+//    {
+//        return[
+//          'itemName' =>  $this->itemName,
+//          'quantity'=> $this->quantity
+//        ];
+//    }
+//
+//    public function __unserialize(array $data): void
+//    {
+//        $this->itemName = $data['itemName'];
+//        $this->quantity = $data['quantity'];
+//    }
 
 
     public function getInvoice()

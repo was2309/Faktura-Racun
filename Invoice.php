@@ -5,14 +5,33 @@ class Invoice
     private $invoiceNumber;
     private $date;
     private $organization;
-    private InvoiceItem|array $items = array();
+
+    /**
+     * @var InvoiceItem[]
+     */
+    private array $items = array();
 
     public function __construct()
     {
 
     }
 
-
+//    public function __serialize(): array
+//    {
+//        return [
+//          'invoiceNumber'=> $this->invoiceNumber,
+//          'date'=>$this->date,
+//          'organization'=>$this->organization
+//        ];
+//    }
+//
+//
+//    public function __unserialize(array $data): void
+//    {
+//        $this->invoiceNumber = $data['invoiceNumber'];
+//        $this->date = $data['date'];
+//        $this->organization = $data['organization'];
+//    }
 
     public function getInvoiceNumber()
     {
@@ -60,6 +79,7 @@ class Invoice
     public function addNewItem($item){
         $this->items[] = $item;
     }
+
 
 
 }
