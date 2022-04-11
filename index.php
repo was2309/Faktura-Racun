@@ -21,27 +21,31 @@ if (isset($_SESSION['invoice'])) {
 }
 
 if (isset($_POST['save'])) {
-    $invoice->setInvoiceNumber($_POST['invoiceNumber']);
-    $invoice->setDate($_POST['date']);
-    $invoice->setOrganization($_POST['organization']);
+    if(empty($_POST['invoiceNumber']) || $_POST['date'] === null || $_POST['organization']===''){
+        echo '<script>alert("Podaci o fakturi nisu validni!")</script>';
+    } else {
+        $invoice->setInvoiceNumber($_POST['invoiceNumber']);
+        $invoice->setDate($_POST['date']);
+        $invoice->setOrganization($_POST['organization']);
 
-    $_SESSION['invoice'] = serialize($invoice);
+        $_SESSION['invoice'] = serialize($invoice);
+    }
 }
 
 
 if (isset($_POST['saveItem'])) {
     $item = new InvoiceItem($invoice);
 
-    if ($_POST['itemName'] === null || $_POST['quantity'] === null) {
-        echo 'podaci nisu validni';
-    } else {
+    if ($_POST['itemName'] === '' || empty($_POST['quantity'])) {
+        echo '<script>alert("Podaci o stavci nisu validni!")</script>';
+    }else {
         $item->setItemName($_POST['itemName']);
         $item->setQuantity($_POST['quantity']);
+
+        $invoice->addNewItem($item);
+
+        $_SESSION['invoice'] = serialize($invoice);
     }
-
-    $invoice->addNewItem($item);
-
-    $_SESSION['invoice'] = serialize($invoice);
 }
 
 ?>
@@ -50,35 +54,44 @@ if (isset($_POST['saveItem'])) {
     <div id="invoiceForm">
         <label class="title"> Unos nove fakture </label>
         <form method="post" action="" name="invoiceF">
-            <label>Broj računa: </label><input type="number" name="invoiceNumber" value="<?php
-                                                                            echo $invoice->getInvoiceNumber();
-                                                                            ?>"><br>
-            <label>Datum: </label><input type="date" name="date" value="<?php
-                                                         echo $invoice->getDate();
-                                                         ?>"><br>
-            <label>Organizacija: </label><select name="organization">
-                <option value=""></option>
-                <option value="Samsung" <?php
-                if($invoice->getOrganization() === 'Samsung'){
-                    echo ' selected';
-                }
-                ?>>Samsung</option>
-                <option value="Volvo" <?php
-                if($invoice->getOrganization() === 'Volvo'){
-                    echo ' selected';
-                }
-                ?>>Volvo</option>
-                <option value="Nestle"  <?php
-                if($invoice->getOrganization() === 'Nestle'){
-                    echo ' selected';
-                }
-                ?>>Nestle</option>
-                <option value="GSP"  <?php
-                if($invoice->getOrganization() === 'GSP'){
-                    echo ' selected';
-                }
-                ?>>GSP</option>
-            </select><br>
+            <div class="input_group">
+                <label>Broj računa: </label>
+                <input type="number" name="invoiceNumber"  class="input_invoice_number" value="<?php
+                                                                                        echo $invoice->getInvoiceNumber();
+                                                                                        ?>"><br>
+            </div>
+            <div class="input_group">
+                <label>Datum: </label>
+                <input type="date" name="date" value="<?php
+                                                        echo $invoice->getDate();
+                                                        ?>"><br>
+            </div>
+            <div class="input_group">
+                <label>Organizacija: </label><select name="organization">
+                    <option value=""></option>
+                    <option value="Samsung" <?php
+                    if($invoice->getOrganization() === 'Samsung'){
+                        echo ' selected';
+                    }
+                    ?>>Samsung</option>
+                    <option value="Volvo" <?php
+                    if($invoice->getOrganization() === 'Volvo'){
+                        echo ' selected';
+                    }
+                    ?>>Volvo</option>
+                    <option value="Nestle"  <?php
+                    if($invoice->getOrganization() === 'Nestle'){
+                        echo ' selected';
+                    }
+                    ?>>Nestle</option>
+                    <option value="GSP"  <?php
+                    if($invoice->getOrganization() === 'GSP'){
+                        echo ' selected';
+                    }
+                    ?>>GSP</option>
+                </select>
+            </div>
+            <br>
             <button type="submit" name="save" value="save">Sačuvaj</button>
         </form>
         <br><br>
@@ -126,9 +139,14 @@ if (isset($_POST['saveItem'])) {
 
         <div id="itemForm">
             <form method="post" action="" name="itemF">
-                <label>Naziv artikla: </label><input type="text" name="itemName"><br>
-                <label>Količina: </label><input type="number" name="quantity"><br>
-                <button type="submit" name="saveItem">Sačuvaj stavku</button>
+                <div class="input_group">
+                     <label>Naziv artikla: </label><input type="text" name="itemName">
+                </div>
+                <br>
+                <div class="input_group">
+                    <label>Količina: </label><input type="number" name="quantity"><br>
+                    <button type="submit" name="saveItem" class="add_item">Sačuvaj stavku</button>
+                </div>
             </form>
         </div>
     </div>

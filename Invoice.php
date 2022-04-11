@@ -76,10 +76,18 @@ class Invoice
         $this->items = $items;
     }
 
-    public function addNewItem($item){
+    public function addNewItem(InvoiceItem $item){
+        foreach ($this->items as $i){
+            if($i == $item) {
+//               echo '<script>alert("Stavka vec postoji!")</script>';
+                return;
+            }
+//            if($i->getItemName() == $item->getItemName()){
+//                $i->setQuantity($i->getQuantity()+$item->getQuantity());
+//                return;
+//            }
+        }
         $this->items[] = $item;
     }
-
-
 
 }

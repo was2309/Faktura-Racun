@@ -1,0 +1,93 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  /*  background-color: #e8e9eb;*/
+}
+
+#invoiceForm{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    padding: 2%;
+}
+
+.items{
+    display: grid;
+    grid-auto-flow: column;
+}
+
+#itemsTable{
+    display: flex;
+    justify-content: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#itemForm{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.title{
+    font-size: x-large;
+    font-weight: bold;
+    padding-bottom: 2%;
+    flex-basis: 0;
+}
+
+table {
+    border: black solid 2px;
+    table-layout: fixed;
+    text-align: center;
+    border-collapse: collapse;
+    overflow: auto;
+}
+
+th, td{
+    border: black solid 2px;
+    margin-left: auto;
+    margin-right: auto;
+    overflow: hidden;
+    width: 21.5rem;
+}
+
+form{
+    box-sizing: border-box;
+    width: auto;
+    border: black solid 2px;
+    text-align: center;
+
+}
+
+.input_group{
+    margin-top:10px;
+    width:50%;
+    display:flex;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.input_invoice_number{
+    width: 17rem;
+}
+
+input, label, select{
+    flex-basis: 15rem;
+}
+
+button{
+    width: 11rem;
+    margin-bottom: 5%;
+}
+
+.add_item{
+    margin-top: 8%;
+    width: 15rem;
+}
