@@ -6,53 +6,95 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="styles/style.css" />
-    <title>Faktura</title>
+    <title>Faktura | Unos</title>
 </head>
 <body>
 <?php
-require_once 'Invoice.php';
-require_once 'InvoiceItem.php';
-session_start();
+    require_once 'Invoice.php';
+    require_once 'InvoiceItem.php';
+    include 'connection.php';
+    session_start();
 
-$invoice = new Invoice();
+    $invoice = new Invoice();
 
-if (isset($_SESSION['invoice'])) {
-    $invoice = unserialize($_SESSION['invoice'], ['allowed_class' => true]);
-}
-
-if (isset($_POST['save'])) {
-    if(empty($_POST['invoiceNumber']) || $_POST['date'] === null || $_POST['organization']===''){
-        echo '<script>alert("Podaci o fakturi nisu validni!")</script>';
-    } else {
-        $invoice->setInvoiceNumber($_POST['invoiceNumber']);
-        $invoice->setDate($_POST['date']);
-        $invoice->setOrganization($_POST['organization']);
-
-        $_SESSION['invoice'] = serialize($invoice);
+    if (isset($_SESSION['invoice'])) {
+        $invoice = unserialize($_SESSION['invoice'], ['allowed_class' => true]);
     }
-}
 
+    if (isset($_POST['add'])) {
+        if(empty($_POST['invoiceNumber']) || $_POST['date'] === null || $_POST['organization']===''){
+            echo "<script>alert('Podaci o fakturi nisu validni!')</script>";
+        } else {
+            $invoice->setInvoiceNumber($_POST['invoiceNumber']);
+            $invoice->setDate($_POST['date']);
+            $invoice->setOrganization($_POST['organization']);
 
-if (isset($_POST['saveItem'])) {
-    $item = new InvoiceItem($invoice);
-
-    if ($_POST['itemName'] === '' || empty($_POST['quantity'])) {
-        echo '<script>alert("Podaci o stavci nisu validni!")</script>';
-    }else {
-        $item->setItemName($_POST['itemName']);
-        $item->setQuantity($_POST['quantity']);
-
-        $invoice->addNewItem($item);
-
-        $_SESSION['invoice'] = serialize($invoice);
+            $_SESSION['invoice'] = serialize($invoice);
+        }
     }
-}
+
+
+    if (isset($_POST['saveItem'])) {
+        $item = new InvoiceItem($invoice);
+
+        if ($_POST['itemName'] === '' || empty($_POST['quantity'])) {
+            echo '<script>alert("Podaci o stavci nisu validni!")</script>';
+        }else {
+            $item->setItemName($_POST['itemName']);
+            $item->setQuantity($_POST['quantity']);
+
+            $invoice->addNewItem($item);
+
+            $_SESSION['invoice'] = serialize($invoice);
+        }
+    }
+
+    if(isset($_POST['save'])){
+        if(!isset($_SESSION['invoice'])){
+            echo '<script>alert("Molimo dodajte fakturu!")</script>';
+        }else{
+            $conn->autocommit(FALSE);
+
+            $invoice = unserialize($_SESSION['invoice'], ['allowed_class' => Invoice::class]);
+            $sql_invoice = "INSERT INTO invoice (invoice_number, date, organization) VALUES (?, ?, ?)";
+            $stmt = $conn->prepare($sql_invoice);
+            $stmt->bind_param("iss", $invoice->getInvoiceNumber(), $invoice->getDate(), $invoice->getOrganization());
+            $stmt->execute();
+
+            $conn->begin_transaction();
+
+            try{
+                $items = $invoice->getItems();
+                $sql_items = "INSERT INTO invoice_item (invoice_number, item_id, item_name, quantity) VALUES (?, ?, ?, ?) ";
+                $stmt_items = $conn->prepare($sql_items);
+                foreach ($invoice->getItems() as $item){
+                    $stmt_items->bind_param("iisi", $item->getInvoiceNumber(), $item->getItemID(), $item->getItemName(), $item->getQuantity());
+                    $stmt_items->execute();
+                }
+
+                $conn->commit();
+                echo "Uspesno dodato u bazu!";
+
+            }catch (mysqli_sql_exception $exception){
+                $conn->rollback();
+                echo "Greska prilikom dodavanja fakture!";
+                throw $exception;
+            } finally {
+                $conn->close();
+            }
+
+        }
+    }
 
 ?>
 
-
+    <div class="links">
+        <a href="invoiceSearch.php">Pretraga fakture</a>
+    </div>
     <div id="invoiceForm">
+
         <label class="title"> Unos nove fakture </label>
+
         <form method="post" action="" name="invoiceF">
             <div class="input_group">
                 <label>Broj računa: </label>
@@ -92,7 +134,8 @@ if (isset($_POST['saveItem'])) {
                 </select>
             </div>
             <br>
-            <button type="submit" name="save" value="save">Sačuvaj</button>
+
+            <button type="submit" name="add" value="add">Dodaj</button>
         </form>
         <br><br>
     </div>
@@ -147,7 +190,10 @@ if (isset($_POST['saveItem'])) {
                     <label>Količina: </label><input type="number" name="quantity"><br>
                     <button type="submit" name="saveItem" class="add_item">Sačuvaj stavku</button>
                 </div>
+                <br><br>
+                <button type="submit" name="save" value="save" class="save_invoice">Sačuvaj fakturu</button>
             </form>
+
         </div>
     </div>
 

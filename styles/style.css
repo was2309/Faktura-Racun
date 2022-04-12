@@ -4,6 +4,23 @@
     box-sizing: border-box;
   /*  background-color: #e8e9eb;*/
 }
+.links{
+    display: flex;
+    justify-content: end;
+
+}
+.links a{
+    margin-right: 5%;
+    margin-top: 1%;
+    font-weight: normal;
+    color: black;
+    text-decoration: none;
+}
+
+.links a:hover{
+    color: darkgray;
+    text-decoration: none;
+}
 
 #invoiceForm{
     display: flex;
@@ -27,6 +44,7 @@
 
 #itemForm{
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     margin-left: auto;
@@ -90,4 +108,11 @@ button{
 .add_item{
     margin-top: 8%;
     width: 15rem;
+}
+
+.save_invoice{
+    width: 15rem;
+    height: 2rem;
+    font-weight: bold;
+    font-size: large;
 }

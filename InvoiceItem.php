@@ -2,17 +2,16 @@
 
 class InvoiceItem
 {
-    private $invoice;
+    private $invoiceNumber;
+    private $itemID;
     private $itemName;
     private $quantity;
 
 
-    public function __construct($invoice)
+    public function __construct()
     {
-        $this->invoice=$invoice;
+
     }
-
-
 
 
 //    public function __serialize(): array
@@ -30,17 +29,30 @@ class InvoiceItem
 //    }
 
 
-    public function getInvoice()
+
+
+    public function getInvoiceNumber()
     {
-        return $this->invoice;
+        return $this->invoiceNumber;
     }
 
 
-    public function setInvoice($invoice): void
+    public function setInvoiceNumber($invoiceNumber): void
     {
-        $this->invoice = $invoice;
+        $this->invoiceNumber = $invoiceNumber;
     }
 
+
+    public function getItemID()
+    {
+        return $this->itemID;
+    }
+
+
+    public function setItemID($itemID): void
+    {
+        $this->itemID = $itemID;
+    }
 
     public function getItemName()
     {
