@@ -1,7 +1,9 @@
 <?php
-    $servername = "localhost";
+
+    include_once 'console_log.php';
+    $servername = "database";
     $username = "root";
-    $password = "";
+    $password = "root";
     $dbname = "invoices";
 
     //phpinfo();
@@ -11,7 +13,7 @@
     if($conn->connect_error){
         die("Connection failed: " . $conn->connect_error);
     }else{
-        echo "<script>console.log('Connection is successfull!')</script>";
+        echo console_log("Connection is successfull!", true);
     }
 
 

@@ -47,8 +47,8 @@
 
             if($result_item->num_rows > 0){
                 while($row = $result_item->fetch_assoc()){
-                    $item = new InvoiceItem();
-                    $item->setInvoiceNumber($row['invoice_number']);
+                    $item = new InvoiceItem($row['invoice_number']);
+                    $item->setItemID($row['item_id']);
                     $item->setItemName($row['item_name']);
                     $item->setQuantity($row['quantity']);
                     array_push($items, $item);

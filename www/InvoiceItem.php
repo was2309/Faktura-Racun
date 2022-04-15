@@ -8,9 +8,9 @@ class InvoiceItem
     private $quantity;
 
 
-    public function __construct()
+    public function __construct($invoiceNumber)
     {
-
+        $this->invoiceNumber = $invoiceNumber;
     }
 
 
