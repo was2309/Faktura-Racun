@@ -6,11 +6,14 @@ class InvoiceItem
     private $itemID;
     private $itemName;
     private $quantity;
+    private bool $isNew;
+    private bool $forDelete;
 
 
     public function __construct($invoiceNumber)
     {
         $this->invoiceNumber = $invoiceNumber;
+        $this->forDelete = false;
     }
 
 
@@ -76,6 +79,40 @@ class InvoiceItem
     {
         $this->quantity = $quantity;
     }
+
+    /**
+     * @return bool
+     */
+    public function isNew(): bool
+    {
+        return $this->isNew;
+    }
+
+    /**
+     * @param bool $isNew
+     */
+    public function setIsNew(bool $isNew): void
+    {
+        $this->isNew = $isNew;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isForDelete(): bool
+    {
+        return $this->forDelete;
+    }
+
+    /**
+     * @param bool $forDelete
+     */
+    public function setForDelete(bool $forDelete): void
+    {
+        $this->forDelete = $forDelete;
+    }
+
+
 
 
 

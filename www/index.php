@@ -92,7 +92,7 @@ if(isset($_POST['save'])){
             $items = $invoice->getItems();
             $sql_items = "INSERT INTO invoice_item (invoice_number, item_name, quantity) VALUES (?, ?, ?) ";
             $stmt_items = $conn->prepare($sql_items);
-            foreach ($invoice->getItems() as $item){
+            foreach ($items as $item){
                 $invoiceNum = $item->getInvoiceNumber();
                 $itemName = $item->getItemName();
                 $itemQuantity = $item->getQuantity();
@@ -125,7 +125,7 @@ if(isset($_POST['save'])){
 
     <label class="title"> Unos nove fakture </label>
 
-    <form method="post" action="" name="invoiceF">
+    <form method="post" action="" name="invoiceF" id="invoiceF">
         <div class="input_group">
             <label>Broj računa: </label>
             <input type="number" name="invoiceNumber"  class="input_invoice_number" value="<?php
