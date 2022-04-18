@@ -116,3 +116,13 @@ button{
     font-weight: bold;
     font-size: large;
 }
+
+.removeItemBtnClass{
+    border: none;
+    width: fit-content;
+}
+
+.removeItemBtnClass button{
+   margin-top: 5%;
+   margin-bottom: 5%;
+}

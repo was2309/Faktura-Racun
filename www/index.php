@@ -58,6 +58,18 @@ if (isset($_POST['saveItem'])) {
     }
 }
 
+if(isset($_POST['removeItemBtn'])){
+    $items = $invoice->getItems();
+    foreach($items as $item){
+        if($item->getItemName() === $_POST['removeItemBtn']){
+            $invoice->removeItem($item);
+            $_SESSION['invoice'] = serialize($invoice);
+            break;
+        }
+    }
+}
+
+
 if(isset($_POST['save'])){
     if(!isset($_SESSION['invoice'])){
         echo '<script>alert("Molimo dodajte fakturu!")</script>';
@@ -70,8 +82,8 @@ if(isset($_POST['save'])){
         $stmt = $conn->prepare($sql_invoice);
         $invoiceNumber = $invoice->getInvoiceNumber();
         $invoiceDate = $invoice->getDate();
-        $invoceOrganization = $invoice->getOrganization();
-        $stmt->bind_param("iss", $invoiceNumber, $invoiceDate, $invoceOrganization);
+        $invoiceOrganization = $invoice->getOrganization();
+        $stmt->bind_param("iss", $invoiceNumber, $invoiceDate, $invoiceOrganization);
         $stmt->execute();
 
         $conn->begin_transaction();
@@ -99,7 +111,6 @@ if(isset($_POST['save'])){
             $conn->close();
             session_unset();
             $_POST = array();
-
         }
         
     }
@@ -190,6 +201,9 @@ if(isset($_POST['save'])){
                     <td><?php
                         echo $item->getQuantity();
                         ?></td>
+                    <td class="removeItemBtnClass">
+                        <button type="submit" form="itemF" name="removeItemBtn" value="<?php echo $item->getItemName()?>">Ukloni</button>
+                    </td>
                 </tr>
             <?php } ?>
             </thead>
@@ -201,7 +215,7 @@ if(isset($_POST['save'])){
     </div>
 
     <div id="itemForm">
-        <form method="post" action="" name="itemF">
+        <form method="post" action="" id="itemF">
             <div class="input_group">
                 <label>Naziv artikla: </label><input type="text" name="itemName">
             </div>
@@ -216,6 +230,7 @@ if(isset($_POST['save'])){
 
     </div>
 </div>
+
 
 </body>
 </html>
