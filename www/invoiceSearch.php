@@ -1,5 +1,8 @@
 <?php
     session_start();
+    include_once 'Invoice.php';
+    include_once 'InvoiceItem.php';
+    include 'connection.php';
 ?>
 
 <!doctype html>
@@ -14,9 +17,6 @@
 </head>
 <body>
 <?php
-    require_once 'Invoice.php';
-    require_once 'InvoiceItem.php';
-    include 'connection.php';
 
     $invoice = new Invoice();
 
@@ -85,14 +85,15 @@
         }
     }
 
-    $removingItems = array();
+
     if(isset($_POST['removeItemBtn'])){
         $items = $invoice->getItems();
         foreach($items as $item){
             if($item->getItemName() === $_POST['removeItemBtn']){
                 if(!$item->isNew()){
                     $item->setForDelete(true);
-                    $removingItems[] = $item;
+                    $_SESSION['itemForDelete'] = serialize($item);
+                    $_SESSION['removingItems'][] = $_SESSION['itemForDelete'];
                 }
                 $invoice->removeItem($item);
                 $_SESSION['invoice'] = serialize($invoice);
@@ -109,6 +110,12 @@
             $conn->autocommit(false);
 
             $invoice = unserialize($_SESSION['invoice'], ['allowed_class' => Invoice::class]);
+            if(isset($_POST['date'])){
+                $invoice->setDate($_POST['date']);
+            }
+            if(isset($_POST['organization'])){
+                $invoice->setOrganization($_POST['organization']);
+            }
             $sql_invoice = "UPDATE invoice SET date=?, organization=? WHERE invoice_number=?";
             $stmt = $conn->prepare($sql_invoice);
             $invoiceNumber = $invoice->getInvoiceNumber();
@@ -133,11 +140,12 @@
                     }
                 }
 
-                if(!empty($removingItems)){
+                if(!isset($_SESSION['removingItems']) || !empty($_SESSION['removingItems'])){
                     $sql_deleteItems = "DELETE FROM invoice_item WHERE item_id=?";
                     $stmt_deleteItems = $conn->prepare($sql_deleteItems);
-                    foreach ($removingItems as $item){
-                        $itemID = $item->getItemID();
+                    foreach ($_SESSION['removingItems'] as $item){
+                        $itemForDelete = unserialize($item, ['allowed_class' => true]);
+                        $itemID = $itemForDelete->getItemID();
                         $stmt_deleteItems->bind_param("i", $itemID);
                         $stmt_deleteItems->execute();
                     }
@@ -180,7 +188,7 @@
                 ?>"><br>
             </div>
             <div class="input_group">
-                <label>Organizacija: </label>
+                <label+>Organizacija: </label>
                 <select name="organization">
                     <option value=""></option>
                     <option value="Samsung" <?php
