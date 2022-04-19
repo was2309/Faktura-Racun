@@ -105,64 +105,64 @@
     if(isset($_POST['update'])){
         if(!isset($_SESSION['invoice'])){
             echo '<script>alert("Molimo dodajte fakturu koju želite da izmenite!")</script>';
-        }else{
+            return;
+        }
 
-            $conn->autocommit(false);
+        $conn->autocommit(false);
 
-            $invoice = unserialize($_SESSION['invoice'], ['allowed_class' => Invoice::class]);
-            if(isset($_POST['date'])){
-                $invoice->setDate($_POST['date']);
-            }
-            if(isset($_POST['organization'])){
-                $invoice->setOrganization($_POST['organization']);
-            }
-            $sql_invoice = "UPDATE invoice SET date=?, organization=? WHERE invoice_number=?";
-            $stmt = $conn->prepare($sql_invoice);
-            $invoiceNumber = $invoice->getInvoiceNumber();
-            $invoiceDate = $invoice->getDate();
-            $invoiceOrganization = $invoice->getOrganization();
-            $stmt->bind_param("ssi",$invoiceDate, $invoiceOrganization, $invoiceNumber);
-            $stmt->execute();
+        $invoice = unserialize($_SESSION['invoice'], ['allowed_class' => Invoice::class]);
+        if(isset($_POST['date'])){
+            $invoice->setDate($_POST['date']);
+        }
+        if(isset($_POST['organization'])){
+            $invoice->setOrganization($_POST['organization']);
+        }
+        $sql_invoice = "UPDATE invoice SET date=?, organization=? WHERE invoice_number=?";
+        $stmt = $conn->prepare($sql_invoice);
+        $invoiceNumber = $invoice->getInvoiceNumber();
+        $invoiceDate = $invoice->getDate();
+        $invoiceOrganization = $invoice->getOrganization();
+        $stmt->bind_param("ssi",$invoiceDate, $invoiceOrganization, $invoiceNumber);
+        $stmt->execute();
 
-            $conn->begin_transaction();
+        $conn->begin_transaction();
 
-            try{
-                $items = $invoice->getItems();
-                $sql_insertItems = "INSERT INTO invoice_item (invoice_number, item_name, quantity) VALUES (?, ?, ?)";
-                $stmt_insertItems = $conn->prepare($sql_insertItems);
-                foreach ($items as $item){
-                    if($item->isNew()){
-                        $invoiceNum = $item->getInvoiceNumber();
-                        $itemName = $item->getItemName();
-                        $itemQuantity = $item->getQuantity();
-                        $stmt_insertItems->bind_param("isi",$invoiceNum,  $itemName, $itemQuantity);
-                        $stmt_insertItems->execute();
-                    }
+        try{
+            $items = $invoice->getItems();
+            $sql_insertItems = "INSERT INTO invoice_item (invoice_number, item_name, quantity) VALUES (?, ?, ?)";
+            $stmt_insertItems = $conn->prepare($sql_insertItems);
+            foreach ($items as $item){
+                if($item->isNew()){
+                    $invoiceNum = $item->getInvoiceNumber();
+                    $itemName = $item->getItemName();
+                    $itemQuantity = $item->getQuantity();
+                    $stmt_insertItems->bind_param("isi",$invoiceNum,  $itemName, $itemQuantity);
+                    $stmt_insertItems->execute();
                 }
-
-                if(!isset($_SESSION['removingItems']) || !empty($_SESSION['removingItems'])){
-                    $sql_deleteItems = "DELETE FROM invoice_item WHERE item_id=?";
-                    $stmt_deleteItems = $conn->prepare($sql_deleteItems);
-                    foreach ($_SESSION['removingItems'] as $item){
-                        $itemForDelete = unserialize($item, ['allowed_class' => true]);
-                        $itemID = $itemForDelete->getItemID();
-                        $stmt_deleteItems->bind_param("i", $itemID);
-                        $stmt_deleteItems->execute();
-                    }
-                }
-
-                $conn->commit();
-                echo "Uspešno ažurirana faktura!";
-
-            }catch(mysqli_sql_exception $exception){
-                $conn->rollback();
-                echo "Greška prilikom ažuriranja fakture!";
-                throw $exception;
-            } finally {
-                $conn->close();
-                session_unset();
-                $_POST = array();
             }
+
+            if(!isset($_SESSION['removingItems']) || !empty($_SESSION['removingItems'])){
+                $sql_deleteItems = "DELETE FROM invoice_item WHERE item_id=?";
+                $stmt_deleteItems = $conn->prepare($sql_deleteItems);
+                foreach ($_SESSION['removingItems'] as $item){
+                    $itemForDelete = unserialize($item, ['allowed_class' => true]);
+                    $itemID = $itemForDelete->getItemID();
+                    $stmt_deleteItems->bind_param("i", $itemID);
+                    $stmt_deleteItems->execute();
+                }
+            }
+
+            $conn->commit();
+            echo "Uspešno ažurirana faktura!";
+
+        }catch(mysqli_sql_exception $exception){
+            $conn->rollback();
+            echo "Greška prilikom ažuriranja fakture!";
+            throw $exception;
+        } finally {
+            $conn->close();
+            session_unset();
+            $_POST = array();
         }
     }
 
@@ -170,54 +170,62 @@
     <div class="links">
         <a href="index.php">Unos nove fakture</a>
     </div>
-
     <div id="invoiceForm">
         <label class="title"> Pretraga fakture </label>
+        <div class="searchForms">
+            <div class="searchPart">
+                <form method="post" action="" name="searchInvoiceF" id="searhInvoiceF">
+                    <div class="input_group">
+                        <label>Broj računa: </label>
+                        <input type="number" name="invoiceNumber"  class="input_invoice_number" value="<?php
+                        echo $invoice->getInvoiceNumber();
+                        ?>"><br>
+                    </div>
+                    <button type="submit" name="search" value="search">Pretraži</button>
+                </form>
 
-        <form method="post" action="" name="invoiceF" id="invoiceF">
-            <div class="input_group">
-                <label>Broj računa: </label>
-                <input type="number" name="invoiceNumber"  class="input_invoice_number" value="<?php
-                echo $invoice->getInvoiceNumber();
-                ?>"><br>
             </div>
-            <div class="input_group">
-                <label>Datum: </label>
-                <input type="date" name="date" value="<?php
-                echo $invoice->getDate();
-                ?>"><br>
-            </div>
-            <div class="input_group">
-                <label+>Organizacija: </label>
-                <select name="organization">
-                    <option value=""></option>
-                    <option value="Samsung" <?php
-                    if($invoice->getOrganization() === 'Samsung'){
-                        echo ' selected';
-                    }
-                    ?>>Samsung</option>
-                    <option value="Volvo" <?php
-                    if($invoice->getOrganization() === 'Volvo'){
-                        echo ' selected';
-                    }
-                    ?>>Volvo</option>
-                    <option value="Nestle"  <?php
-                    if($invoice->getOrganization() === 'Nestle'){
-                        echo ' selected';
-                    }
-                    ?>>Nestle</option>
-                    <option value="GSP"  <?php
-                    if($invoice->getOrganization() === 'GSP'){
-                        echo ' selected';
-                    }
-                    ?>>GSP</option>
-                </select>
-            </div>
+            <div class="searchPart">
+                <form method="post" action="" name="invoiceF" id="invoiceF">
+                    <div class="input_group">
+                        <label>Datum: </label>
+                        <input type="date" name="date" id="date" value="<?php
+                        echo $invoice->getDate();
+                        ?>"><br>
+                    </div>
+                    <div class="input_group">
+                        <label>Organizacija: </label>
+                        <select name="organization" id="organization">
+                            <option value=""></option>
+                            <option value="Samsung" <?php
+                            if($invoice->getOrganization() === 'Samsung'){
+                                echo ' selected';
+                            }
+                            ?>>Samsung</option>
+                            <option value="Volvo" <?php
+                            if($invoice->getOrganization() === 'Volvo'){
+                                echo ' selected';
+                            }
+                            ?>>Volvo</option>
+                            <option value="Nestle"  <?php
+                            if($invoice->getOrganization() === 'Nestle'){
+                                echo ' selected';
+                            }
+                            ?>>Nestle</option>
+                            <option value="GSP"  <?php
+                            if($invoice->getOrganization() === 'GSP'){
+                                echo ' selected';
+                            }
+                            ?>>GSP</option>
+                        </select>
+                    </div>
 
-            <br>
-            <button type="submit" name="search" value="search">Pretraži</button>
-        </form>
-        <br><br>
+                    <br>
+                    <button type="submit" name="update" value="update" id="update" class="save_invoice">Sačuvaj izmenjenu fakturu</button>
+                </form>
+            </div>
+            <br><br>
+        </div>
     </div>
 
     <div class="items">
@@ -273,7 +281,7 @@
                     <button type="submit" name="saveItem" class="add_item">Sačuvaj stavku</button>
                 </div>
                 <br><br>
-                <button type="submit" name="update" value="update" class="save_invoice">Sačuvaj izmenjenu fakturu</button>
+
             </form>
         </div>
     </div>
