@@ -141,7 +141,7 @@
                 }
             }
 
-            if(!isset($_SESSION['removingItems']) || !empty($_SESSION['removingItems'])){
+            if(isset($_SESSION['removingItems']) && !empty($_SESSION['removingItems'])){
                 $sql_deleteItems = "DELETE FROM invoice_item WHERE item_id=?";
                 $stmt_deleteItems = $conn->prepare($sql_deleteItems);
                 foreach ($_SESSION['removingItems'] as $item){
