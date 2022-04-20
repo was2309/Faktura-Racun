@@ -1,5 +1,5 @@
 <?php
-    session_start();
+session_start();
 
 ?>
 
@@ -10,8 +10,32 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="styles/style.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="styles/style.css"/>
     <title>Faktura | Unos</title>
+
+    <script>
+
+        $(window).on("load", function () {
+            $("#invoiceNumber")
+                .change(() => {
+                   var numberInvoice = $("#invoiceNumber").val();
+                   $.post("./index.php", {invoiceNumber:numberInvoice});
+                });
+            $("#date")
+                .change(() => {
+                    var dateInvoice = $("#date").val();
+                    $.post("./index.php", {date:dateInvoice});
+                });
+            $("#organization")
+                .change(() => {
+                    var orgInvoice = $("#organization").val();
+                    $.post("./index.php", {organization:orgInvoice});
+                });
+        });
+
+    </script>
+
 </head>
 <body>
 <?php
@@ -30,38 +54,71 @@ if (isset($_SESSION['invoice'])) {
     $invoice = unserialize($_SESSION['invoice'], ['allowed_class' => true]);
 }
 
-if (isset($_POST['add'])) {
-    if(empty($_POST['invoiceNumber']) || $_POST['date'] === null || $_POST['organization']===''){
+if(isset($_POST['invoiceNumber'])){
+    if(empty($_POST['invoiceNumber'])){
         echo "<script>alert('Podaci o fakturi nisu validni!')</script>";
-    } else {
+    }else{
         $invoice->setInvoiceNumber($_POST['invoiceNumber']);
-        $invoice->setDate($_POST['date']);
-        $invoice->setOrganization($_POST['organization']);
-
         $_SESSION['invoice'] = serialize($invoice);
     }
 }
+
+if(isset($_POST['date'])){
+    if(empty($_POST['date'])){
+        echo "<script>alert('Podaci o fakturi nisu validni!')</script>";
+    }else{
+        $invoice->setDate($_POST['date']);
+        $_SESSION['invoice'] = serialize($invoice);
+    }
+}
+
+if(isset($_POST['organization'])){
+    if(empty($_POST['organization'])){
+        echo "<script>alert('Podaci o fakturi nisu validni!')</script>";
+    }else{
+        $invoice->setOrganization($_POST['organization']);
+        $_SESSION['invoice'] = serialize($invoice);
+    }
+}
+
+//if (isset($_POST['add'])) {
+//    if (empty($_POST['invoiceNumber']) || $_POST['date'] === null || $_POST['organization'] === '') {
+//        echo "<script>alert('Podaci o fakturi nisu validni!')</script>";
+//    } else {
+//        $invoice->setInvoiceNumber($_POST['invoiceNumber']);
+//        $invoice->setDate($_POST['date']);
+//        $invoice->setOrganization($_POST['organization']);
+//
+//        $_SESSION['invoice'] = serialize($invoice);
+//    }
+//}
 
 
 if (isset($_POST['saveItem'])) {
-    $item = new InvoiceItem($invoice->getInvoiceNumber());
+    if(!isset($_SESSION['invoice']) || $invoice->getInvoiceNumber()===null){
+        echo "<script>alert('Molimo unesite podatke o fakturi da biste uneli stavke!')</script>";
 
-    if ($_POST['itemName'] === '' || empty($_POST['quantity'])) {
-        echo '<script>alert("Podaci o stavci nisu validni!")</script>';
-    }else {
-        $item->setItemName($_POST['itemName']);
-        $item->setQuantity($_POST['quantity']);
+    }else{
+        $item = new InvoiceItem($invoice->getInvoiceNumber());
 
-        $invoice->addNewItem($item);
+        if ($_POST['itemName'] === '' || empty($_POST['quantity'])) {
+            echo '<script>alert("Podaci o stavci nisu validni!")</script>';
+        } else {
+            $item->setItemName($_POST['itemName']);
+            $item->setQuantity($_POST['quantity']);
 
-        $_SESSION['invoice'] = serialize($invoice);
+            $invoice->addNewItem($item);
+
+            $_SESSION['invoice'] = serialize($invoice);
+        }
     }
+
 }
 
-if(isset($_POST['removeItemBtn'])){
+if (isset($_POST['removeItemBtn'])) {
     $items = $invoice->getItems();
-    foreach($items as $item){
-        if($item->getItemName() === $_POST['removeItemBtn']){
+    foreach ($items as $item) {
+        if ($item->getItemName() === $_POST['removeItemBtn']) {
             $invoice->removeItem($item);
             $_SESSION['invoice'] = serialize($invoice);
             break;
@@ -70,10 +127,10 @@ if(isset($_POST['removeItemBtn'])){
 }
 
 
-if(isset($_POST['save'])){
-    if(!isset($_SESSION['invoice'])){
+if (isset($_POST['save'])) {
+    if (!isset($_SESSION['invoice'])) {
         echo '<script>alert("Molimo dodajte fakturu!")</script>';
-    }else{
+    } else {
 
         $conn->autocommit(FALSE);
 
@@ -88,22 +145,22 @@ if(isset($_POST['save'])){
 
         $conn->begin_transaction();
 
-        try{
+        try {
             $items = $invoice->getItems();
             $sql_items = "INSERT INTO invoice_item (invoice_number, item_name, quantity) VALUES (?, ?, ?) ";
             $stmt_items = $conn->prepare($sql_items);
-            foreach ($items as $item){
+            foreach ($items as $item) {
                 $invoiceNum = $item->getInvoiceNumber();
                 $itemName = $item->getItemName();
                 $itemQuantity = $item->getQuantity();
-                $stmt_items->bind_param("isi",$invoiceNum,  $itemName, $itemQuantity);
+                $stmt_items->bind_param("isi", $invoiceNum, $itemName, $itemQuantity);
                 $stmt_items->execute();
             }
 
             $conn->commit();
             echo "Uspešno dodato u bazu!";
 
-        }catch (mysqli_sql_exception $exception){
+        } catch (mysqli_sql_exception $exception) {
             $conn->rollback();
             echo "Greška prilikom dodavanja fakture!";
             throw $exception;
@@ -111,8 +168,9 @@ if(isset($_POST['save'])){
             $conn->close();
             session_unset();
             $_POST = array();
+            $invoice=new Invoice();
         }
-        
+
     }
 }
 
@@ -124,50 +182,58 @@ if(isset($_POST['save'])){
 <div id="invoiceForm">
 
     <label class="title"> Unos nove fakture </label>
+    <div id="invoiceInput">
+        <form method="post" action="" name="invoiceF" id="invoiceF">
+            <div class="input_group">
+                <label>Broj računa: </label>
+                <input type="number" name="invoiceNumber" id="invoiceNumber" class="input_invoice_number" value="<?php
+                echo $invoice->getInvoiceNumber();
+                ?>"><br>
+            </div>
+            <div class="input_group">
+                <label>Datum: </label>
+                <input type="date" name="date" id="date" value="<?php
+                echo $invoice->getDate();
+                ?>"><br>
+            </div>
+            <div class="input_group">
+                <label>Organizacija: </label><select name="organization" id="organization">
+                    <option value=""></option>
+                    <option value="Samsung" <?php
+                    if ($invoice->getOrganization() === 'Samsung') {
+                        echo ' selected';
+                    }
+                    ?>>Samsung
+                    </option>
+                    <option value="Volvo" <?php
+                    if ($invoice->getOrganization() === 'Volvo') {
+                        echo ' selected';
+                    }
+                    ?>>Volvo
+                    </option>
+                    <option value="Nestle" <?php
+                    if ($invoice->getOrganization() === 'Nestle') {
+                        echo ' selected';
+                    }
+                    ?>>Nestle
+                    </option>
+                    <option value="GSP" <?php
+                    if ($invoice->getOrganization() === 'GSP') {
+                        echo ' selected';
+                    }
+                    ?>>GSP
+                    </option>
+                </select>
+            </div>
+            <br>
 
-    <form method="post" action="" name="invoiceF" id="invoiceF">
-        <div class="input_group">
-            <label>Broj računa: </label>
-            <input type="number" name="invoiceNumber"  class="input_invoice_number" value="<?php
-            echo $invoice->getInvoiceNumber();
-            ?>"><br>
+    <!--        <button type="submit" name="add" value="add">Dodaj</button>-->
+        </form>
+        <br><br>
+        <div class="save_invoice">
+            <button type="submit" name="save" value="save" class="save_invoice" form="invoiceF">Sačuvaj fakturu</button>
         </div>
-        <div class="input_group">
-            <label>Datum: </label>
-            <input type="date" name="date" value="<?php
-            echo $invoice->getDate();
-            ?>"><br>
-        </div>
-        <div class="input_group">
-            <label>Organizacija: </label><select name="organization">
-                <option value=""></option>
-                <option value="Samsung" <?php
-                if($invoice->getOrganization() === 'Samsung'){
-                    echo ' selected';
-                }
-                ?>>Samsung</option>
-                <option value="Volvo" <?php
-                if($invoice->getOrganization() === 'Volvo'){
-                    echo ' selected';
-                }
-                ?>>Volvo</option>
-                <option value="Nestle"  <?php
-                if($invoice->getOrganization() === 'Nestle'){
-                    echo ' selected';
-                }
-                ?>>Nestle</option>
-                <option value="GSP"  <?php
-                if($invoice->getOrganization() === 'GSP'){
-                    echo ' selected';
-                }
-                ?>>GSP</option>
-            </select>
-        </div>
-        <br>
-
-        <button type="submit" name="add" value="add">Dodaj</button>
-    </form>
-    <br><br>
+    </div>
 </div>
 
 <div class="items">
@@ -202,7 +268,9 @@ if(isset($_POST['save'])){
                         echo $item->getQuantity();
                         ?></td>
                     <td class="removeItemBtnClass">
-                        <button type="submit" form="itemF" name="removeItemBtn" value="<?php echo $item->getItemName()?>">Ukloni</button>
+                        <button type="submit" form="itemF" name="removeItemBtn"
+                                value="<?php echo $item->getItemName() ?>">Ukloni
+                        </button>
                     </td>
                 </tr>
             <?php } ?>
@@ -225,7 +293,7 @@ if(isset($_POST['save'])){
                 <button type="submit" name="saveItem" class="add_item">Sačuvaj stavku</button>
             </div>
             <br><br>
-            <button type="submit" name="save" value="save" class="save_invoice">Sačuvaj fakturu</button>
+
         </form>
 
     </div>
