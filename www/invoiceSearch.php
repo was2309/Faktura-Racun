@@ -12,6 +12,7 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="styles/style.css" />
     <title>Faktura | Pretraga</title>
 </head>
@@ -218,7 +219,7 @@
         <label class="title"> Pretraga fakture </label>
         <div class="searchForms">
             <div class="searchPart">
-                <form method="post" action="" name="searchInvoiceF" id="searhInvoiceF">
+                <form method="post" action="" name="searchInvoiceF" id="searchInvoiceF">
                     <div class="input_group">
                         <label>Broj računa: </label>
                         <input type="number" name="invoiceNumber"  class="input_invoice_number" value="<?php
@@ -230,7 +231,7 @@
 
             </div>
             <div class="searchPart">
-                <form method="post" action="" name="invoiceF" id="invoiceF">
+                <form method="post" action="" name="invoiceF" id="updateInvoiceF">
                     <div class="input_group">
                         <label>Datum: </label>
                         <input type="date" name="date" id="date" value="<?php
@@ -266,8 +267,8 @@
 
                     <br>
                     <div class="saveButtons">
-                        <button type="submit" name="update" value="update" id="update" class="save_invoice">Sačuvaj izmenjenu fakturu</button>
-                        <button type="submit" name="delete" value="delete" id="delete" class="save_invoice"
+                        <button type="submit" name="update" value="update" id="update" class="update_invoice">Sačuvaj izmene</button>
+                        <button type="submit" name="delete" value="delete" id="delete" class="update_invoice"
                                 onclick="return confirm('Da li ste sigurni da želite da obrišete fakturu?')" >Obriši fakturu</button>
                     </div>
 
@@ -308,7 +309,9 @@
                             echo $item->getQuantity();
                             ?></td>
                         <td class="removeItemBtnClass">
-                            <button type="submit" form="itemF" name="removeItemBtn" value="<?php echo $item->getItemName()?>">Ukloni</button>
+                            <button type="submit" form="itemF" name="removeItemBtn" value="<?php echo $item->getItemName()?>">
+                                <i class="fa fa-times icon-large" aria-hidden="true"></i>
+                            </button>
                         </td>
                     </tr>
                 <?php } ?>
@@ -329,7 +332,7 @@
                     <label>Količina: </label><input type="number" name="quantity"><br>
                     <button type="submit" name="saveItem" class="add_item">Sačuvaj stavku</button>
                 </div>
-                <br><br>
+                <br>
 
             </form>
         </div>

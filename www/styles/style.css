@@ -1,8 +1,21 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&display=swap');
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: 'Open Sans', sans-serif;
+    color: #d6d6d6;
+    font-weight: bolder;
+
+
   /*  background-color: #e8e9eb;*/
+}
+
+body{
+    height: 100vh;
+    background: linear-gradient(180deg, rgba(1,0,24,1) 0%, rgba(55,55,73,1) 86%, rgba(45,45,54,1) 100%);
+    background-repeat: no-repeat;
 }
 .links{
     display: flex;
@@ -12,9 +25,9 @@
 .links a{
     margin-right: 5%;
     margin-top: 1%;
-    font-weight: normal;
-    color: black;
+    color: #d6d6d6;
     text-decoration: none;
+
 }
 
 .links a:hover{
@@ -30,13 +43,22 @@
     padding: 2%;
 }
 
-.searchForms{
+#invoiceInput{
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
     align-items: center;
-    width: 100%;
+    width:100vw;
 }
+
+.searchForms{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100vw;
+}
+
 .searchPart{
     width: fit-content;
     margin-left: auto;
@@ -45,14 +67,32 @@
 
 #invoiceF{
     width: 25vw;
+    margin-left: 5%;
+}
+
+#invoiceNumber{
+    color: black;
+    border-radius: 1rem;
+    text-align: center;
 }
 
 #date{
     width: 18rem;
+    color: black;
+    border-radius: 1rem;
+    text-align: center;
 }
 
 #organization{
     width: 15rem;
+    color: black;
+    border-radius: 1rem;
+    text-align: center;
+    background: #d6d6d6;
+}
+
+#organization option{
+    color: black;
 }
 
 .saveButtons{
@@ -81,35 +121,52 @@
     align-items: center;
     margin-left: auto;
     margin-right: auto;
+    width: 25vw;
 }
 
 .title{
-    font-size: x-large;
+    font-size: xx-large;
     font-weight: bold;
+    font-family: 'Open Sans', sans-serif;
     padding-bottom: 2%;
     flex-basis: 0;
 }
 
 table {
-    border: black solid 2px;
     table-layout: fixed;
     text-align: center;
-    border-collapse: collapse;
+    border-radius: 2rem;
     overflow: auto;
+    height: 1vw;
 }
 
 th, td{
-    border: black solid 2px;
+    border: #ede9e8 solid 2px;
     margin-left: auto;
     margin-right: auto;
     overflow: hidden;
     width: 21.5rem;
+    border-radius: 2rem;
+}
+
+#searchInvoiceF{
+    width: 20vw;
+    margin-left: 35%;
+
+}
+
+#updateInvoiceF{
+    width: 24vw;
+    min-width: fit-content;
+    margin-left: 40%;
+    margin-right: auto;
 }
 
 form{
     box-sizing: border-box;
     width: auto;
-    border: black solid 2px;
+    border: #ede9e8 solid 2px;
+    border-radius: 2rem;
     text-align: center;
 
 }
@@ -122,7 +179,20 @@ form{
     flex-wrap:wrap;
     margin-left: auto;
     margin-right: auto;
+
 }
+
+.input_group input{
+    text-align: center;
+    color: black;
+    background: #d6d6d6;
+    border:none;
+}
+
+.input_group input:focus{
+    color: black;
+}
+
 
 .input_invoice_number{
     width: 17rem;
@@ -130,11 +200,21 @@ form{
 
 input, label, select{
     flex-basis: 15rem;
+    border-radius: 1rem;
 }
 
 button{
     width: 11rem;
     margin-bottom: 5%;
+    color: black;
+    border-radius: 1rem;
+    border-color: transparent;
+    background: #d6d6d6;
+}
+
+button:hover{
+    background: #aba8a7;
+    color: #e6e3e3;
 }
 
 .add_item{
@@ -143,6 +223,14 @@ button{
 }
 
 .save_invoice{
+    width: 12rem;
+    height: 3rem;
+    font-weight: bold;
+    font-size: medium;
+    margin-left: 10%;
+}
+
+.update_invoice{
     width: 12rem;
     height: 3rem;
     font-weight: bold;
@@ -157,4 +245,9 @@ button{
 .removeItemBtnClass button{
    margin-top: 5%;
    margin-bottom: 5%;
+    width: 5rem;
+}
+
+.fa-times{
+    color: #b01f15;
 }
