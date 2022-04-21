@@ -13,12 +13,12 @@
 }
 
 body{
-    height: 100vh;
     background: linear-gradient(180deg, rgba(1,0,24,1) 0%, rgba(55,55,73,1) 50%, rgba(1,0,24,1) 100%);
     /*background: linear-gradient(180deg, rgba(1,0,24,1) 0%, rgba(55,55,73,1) 86%, rgba(45,45,54,1) 100%);*/
     background-repeat: no-repeat;
     width: 70%;
     margin: auto;
+    padding-bottom: inherit;
 }
 .links{
     display: flex;
@@ -119,6 +119,7 @@ body{
     justify-content: center;
     margin-left: auto;
     margin-right: auto;
+    overflow: auto;
 }
 
 #itemForm{
