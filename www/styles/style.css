@@ -14,8 +14,11 @@
 
 body{
     height: 100vh;
-    background: linear-gradient(180deg, rgba(1,0,24,1) 0%, rgba(55,55,73,1) 86%, rgba(45,45,54,1) 100%);
+    background: linear-gradient(180deg, rgba(1,0,24,1) 0%, rgba(55,55,73,1) 50%, rgba(1,0,24,1) 100%);
+    /*background: linear-gradient(180deg, rgba(1,0,24,1) 0%, rgba(55,55,73,1) 86%, rgba(45,45,54,1) 100%);*/
     background-repeat: no-repeat;
+    width: 70%;
+    margin: auto;
 }
 .links{
     display: flex;
@@ -23,16 +26,20 @@ body{
 
 }
 .links a{
-    margin-right: 5%;
+    margin-right: 2%;
     margin-top: 1%;
     color: #d6d6d6;
     text-decoration: none;
-
+    padding: 0.5%;
+    border-radius: 10px;
+    transition: .3s;
 }
 
 .links a:hover{
-    color: darkgray;
+    color: #1f1f1f;
     text-decoration: none;
+    background: #d6d6d6;
+
 }
 
 #invoiceForm{
@@ -56,7 +63,7 @@ body{
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    width: 100vw;
+    width: 140%;
 }
 
 .searchPart{
@@ -67,7 +74,7 @@ body{
 
 #invoiceF{
     width: 25vw;
-    margin-left: 5%;
+
 }
 
 #invoiceNumber{
@@ -151,14 +158,12 @@ th, td{
 
 #searchInvoiceF{
     width: 20vw;
-    margin-left: 35%;
 
 }
 
 #updateInvoiceF{
     width: 24vw;
     min-width: fit-content;
-    margin-left: 40%;
     margin-right: auto;
 }
 
@@ -210,10 +215,11 @@ button{
     border-radius: 1rem;
     border-color: transparent;
     background: #d6d6d6;
+    transition: .2s;
 }
 
 button:hover{
-    background: #aba8a7;
+    background: #757575;
     color: #e6e3e3;
 }
 
@@ -225,9 +231,15 @@ button:hover{
 .save_invoice{
     width: 12rem;
     height: 3rem;
+    /*margin-left: auto;*/
+    /*margin-right: auto;*/
+}
+
+.save_invoice_button{
+    width: 12rem;
+    height: 3rem;
     font-weight: bold;
     font-size: medium;
-    margin-left: 10%;
 }
 
 .update_invoice{
@@ -251,3 +263,8 @@ button:hover{
 .fa-times{
     color: #b01f15;
 }
+
+.fa-times:hover{
+    color: #fa1100;
+}
+
