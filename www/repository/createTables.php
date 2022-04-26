@@ -1,5 +1,5 @@
 <?php
-    include_once 'console_log.php';
+    include_once '../styles/console_log.php';
     $servername = "database";
     $username = "root";
     $password = "root";
