@@ -168,49 +168,49 @@
         }
     }
 
-    if(isset($_POST['delete'])){
-        if(!isset($_SESSION['invoice'])){
-            echo '<script>alert("Molimo izaberite fakturu koju želite da obrišete!")</script>';
-            return;
-        }
-
-        $conn->autocommit(false);
-
-
-        $invoice = unserialize($_SESSION['invoice'], ['allowed_class' => Invoice::class]);
-
-        $conn->begin_transaction();
-
-        try{
-            $invoiceNumb = $invoice->getInvoiceNumber();
-            $sql_items = "DELETE FROM invoice_item WHERE invoice_number=?";
-            $stmt_items = $conn->prepare($sql_items);
-//            foreach ($items as $item){
-//                $invoiceNumb = $item->getInvoiceNumber();
-            $stmt_items->bind_param("i", $invoiceNumb);
-            $stmt_items->execute();
-//            }
-
-            $sql_invoice = "DELETE FROM invoice WHERE invoice_number=?";
-            $stmt_invoice = $conn->prepare($sql_invoice);
-            $stmt_invoice->bind_param("i", $invoiceNumb);
-            $stmt_invoice->execute();
-
-            $conn->commit();
-            echo "Uspešno obirsana faktura!";
-
-        }catch(mysqli_sql_exception $exception){
-            $conn->rollback();
-            echo "Greška prilikom brisanja fakture!";
-            throw $exception;
-        } finally {
-            $conn->close();
-            session_unset();
-            $_POST = array();
-        }
-
-
-    }
+//    if(isset($_POST['delete'])){
+//        if(!isset($_SESSION['invoice'])){
+//            echo '<script>alert("Molimo izaberite fakturu koju želite da obrišete!")</script>';
+//            return;
+//        }
+//
+//        $conn->autocommit(false);
+//
+//
+//        $invoice = unserialize($_SESSION['invoice'], ['allowed_class' => Invoice::class]);
+//
+//        $conn->begin_transaction();
+//
+//        try{
+//            $invoiceNumb = $invoice->getInvoiceNumber();
+//            $sql_items = "DELETE FROM invoice_item WHERE invoice_number=?";
+//            $stmt_items = $conn->prepare($sql_items);
+////            foreach ($items as $item){
+////                $invoiceNumb = $item->getInvoiceNumber();
+//            $stmt_items->bind_param("i", $invoiceNumb);
+//            $stmt_items->execute();
+////            }
+//
+//            $sql_invoice = "DELETE FROM invoice WHERE invoice_number=?";
+//            $stmt_invoice = $conn->prepare($sql_invoice);
+//            $stmt_invoice->bind_param("i", $invoiceNumb);
+//            $stmt_invoice->execute();
+//
+//            $conn->commit();
+//            echo "Uspešno obirsana faktura!";
+//
+//        }catch(mysqli_sql_exception $exception){
+//            $conn->rollback();
+//            echo "Greška prilikom brisanja fakture!";
+//            throw $exception;
+//        } finally {
+//            $conn->close();
+//            session_unset();
+//            $_POST = array();
+//        }
+//
+//
+//    }
 
 ?>
     <div class="links">

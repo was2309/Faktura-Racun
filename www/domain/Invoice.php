@@ -59,13 +59,13 @@ class Invoice
         return $this->organization;
     }
 
-    public function setOrganization($organization)
+    public function setOrganization($organization):void
     {
         $this->organization = $organization;
     }
 
 
-    public function getItems()
+    public function getItems():array
     {
         return $this->items;
     }
@@ -76,7 +76,7 @@ class Invoice
         $this->items = $items;
     }
 
-    public function addNewItem(InvoiceItem $item){
+    public function addNewItem(InvoiceItem $item):void{
         if($item->getItemName() === null || $item->getQuantity() === null){
             return;
         }
@@ -85,7 +85,7 @@ class Invoice
 //               echo '<script>alert("Stavka vec postoji!")</script>';
                 return;
             }
-            if($i->getItemName() == $item->getItemName() && $i->getQuantity()!= $item->getQuantity()){
+            if($i->getItemName() === $item->getItemName() && $i->getQuantity()!== $item->getQuantity()){
                 $i->setQuantity($i->getQuantity()+$item->getQuantity());
                 return;
             }
@@ -93,7 +93,7 @@ class Invoice
         $this->items[] = $item;
     }
 
-    public function removeItem(InvoiceItem $item){
+    public function removeItem(InvoiceItem $item):void{
         if($item->getItemName() === null || $item->getQuantity() === null){
             return;
         }

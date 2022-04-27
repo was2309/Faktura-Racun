@@ -124,18 +124,36 @@
 //    }
 //}
 
-include_once '../controller/Controller.php';
+include_once '../controller/InvoiceController.php';
 
+$invoiceController = new InvoiceController();
 
 if (isset($_POST['add'])) {
     $invoiceNumber = $_POST['invoiceNumber'];
     $date = $_POST['date'];
     $organization = $_POST['organization'];
-    Controller::getInstance()->addInvoice($invoiceNumber, $date, $organization);
+    $invoiceController->addInvoice($invoiceNumber, $date, $organization);
     $_SESSION['invoiceNumber'] = $invoiceNumber;
     $_SESSION['date'] = $date;
     $_SESSION['organization'] = $date;
 }
+
+if (isset($_POST['saveItem'])) {
+    $invoiceNumber = $_SESSION['invoiceNumber'];
+    $itemName = $_POST['itemName'];
+    $quantity = $_POST['quantity'];
+    $invoiceController->createItem($invoiceNumber, $itemName, $quantity);
+    $items = $_SESSION['items'];
+    if($items === null){
+        $items = array();
+        $items[] = array("ordNum"=>1, "itemName"=>$itemName, "quantity"=>$quantity);
+        return;
+    }
+    $items[] = array("ordNum"=>count($items), "itemName"=>$itemName, "quantity"=>$quantity);
+    $_SESSION['items'] = $items;
+}
+
+
 
 ?>
 
