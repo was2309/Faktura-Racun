@@ -125,35 +125,75 @@
 //}
 
 include_once '../controller/InvoiceController.php';
+include_once '../dto/DTOInvoice.php';
+include_once '../dto/DTOItem.php';
 
-$invoiceController = new InvoiceController();
+ $invoiceController = new InvoiceController();
+
+ $DTOInvoice = new DTOInvoice();
+
+ if(isset($_SESSION['dtoInvoice'])){
+     $DTOInvoice = unserialize($_SESSION['dtoInvoice'], ['allowed_class' => true]);
+ }
 
 if (isset($_POST['add'])) {
     $invoiceNumber = $_POST['invoiceNumber'];
     $date = $_POST['date'];
     $organization = $_POST['organization'];
-    $invoiceController->addInvoice($invoiceNumber, $date, $organization);
+    $DTOInvoice->setInvoiceNumber($invoiceNumber);
+    $DTOInvoice->setDate($date);
+    $DTOInvoice->setOrganization($organization);
     $_SESSION['invoiceNumber'] = $invoiceNumber;
     $_SESSION['date'] = $date;
     $_SESSION['organization'] = $date;
+    $_SESSION['dtoInvoice'] = serialize($DTOInvoice);
 }
 
 if (isset($_POST['saveItem'])) {
+    if(!isset($_SESSION['invoiceNumber']) || $DTOInvoice === null){
+        echo "Molimo unesite fakturu pre nego što dodate stavku!";
+        return;
+    }
     $invoiceNumber = $_SESSION['invoiceNumber'];
     $itemName = $_POST['itemName'];
     $quantity = $_POST['quantity'];
-    $invoiceController->createItem($invoiceNumber, $itemName, $quantity);
-    $items = $_SESSION['items'];
-    if($items === null){
-        $items = array();
-        $items[] = array("ordNum"=>1, "itemName"=>$itemName, "quantity"=>$quantity);
-        return;
-    }
-    $items[] = array("ordNum"=>count($items), "itemName"=>$itemName, "quantity"=>$quantity);
-    $_SESSION['items'] = $items;
+    $DTOItem = new DTOItem();
+    $DTOItem->setInvoiceNumber($invoiceNumber);
+    $DTOItem->setItemName($itemName);
+    $DTOItem->setQuantity($quantity);
+    $DTOItem->setIsNew(true);
+    $DTOInvoice->addItem($DTOItem);
+    $_SESSION['dtoInvoice'] = serialize($DTOInvoice);
+//    $items = $_SESSION['items'];
+//    if($items === null){
+//        $items = array();
+//        $items[] = array("ordNum"=>1, "itemName"=>$itemName, "quantity"=>$quantity);
+//        return;
+//    }
+//    $items[] = array("ordNum"=>count($items), "itemName"=>$itemName, "quantity"=>$quantity);
+//    $_SESSION['items'] = $items;
 }
 
+if (isset($_POST['removeItemBtn'])) {
+    $items = $DTOInvoice->getItems();
+    foreach ($items as $i){
+        if($i->getItemName() === $_POST['removeItemBtn']){
+            $DTOInvoice->removeItem($i);
+            $_SESSION['dtoInvoice'] = serialize($DTOInvoice);
+            break;
+        }
+    }
+}
 
+if(isset($_POST['save'])){
+    if(!isset($_SESSION['dtoInvoice'])){
+            echo '<script>alert("Molimo dodajte fakturu!")</script>';
+            return;
+    }
+
+    $DTOInvoice = unserialize($_SESSION['dtoInvoice'], ['allowed_class' => true]);
+    $invoiceController->save($DTOInvoice);
+}
 
 ?>
 
@@ -232,29 +272,29 @@ if (isset($_POST['saveItem'])) {
                     Količina
                 </th>
             </tr>
-<!--            --><?php
-//            $count = 0;
-//            foreach ($invoice->getItems() as $item) {
-//                $count++;
-//                ?>
-<!--                <tr>-->
-<!--                    <td>--><?php
-//
-//                        echo $count;
-//                        ?><!--</td>-->
-<!--                    <td>--><?php
-//                        echo $item->getItemName();
-//                        ?><!--</td>-->
-<!--                    <td>--><?php
-//                        echo $item->getQuantity();
-//                        ?><!--</td>-->
-<!--                    <td class="removeItemBtnClass">-->
-<!--                        <button type="submit" form="itemF" name="removeItemBtn" value="--><?php //echo $item->getItemName()?><!--">-->
-<!--                            <i class="fa fa-times icon-large" aria-hidden="true"></i>-->
-<!--                        </button>-->
-<!--                    </td>-->
-<!--                </tr>-->
-<!--            --><?php //} ?>
+            <?php
+            $count = 0;
+            foreach ($DTOInvoice->getItems() as $item) {
+                $count++;
+                ?>
+                <tr>
+                    <td><?php
+
+                        echo $count;
+                        ?></td>
+                    <td><?php
+                        echo $item->getItemName();
+                        ?></td>
+                    <td><?php
+                        echo $item->getQuantity();
+                        ?></td>
+                    <td class="removeItemBtnClass">
+                        <button type="submit" form="itemF" name="removeItemBtn" value="<?php echo $item->getItemName()?>">
+                            <i class="fa fa-times icon-large" aria-hidden="true"></i>
+                        </button>
+                    </td>
+                </tr>
+            <?php } ?>
             </thead>
             <tbody>
 

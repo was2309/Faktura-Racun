@@ -3,6 +3,7 @@
 class InvoiceItem
 {
     private $invoiceId;
+    private $invoiceNumber;
     private $itemID;
     private $itemName;
     private $quantity;
@@ -10,9 +11,8 @@ class InvoiceItem
     private bool $forDelete;
 
 
-    public function __construct($invoiceNumber)
+    public function __construct()
     {
-        $this->invoiceId = $invoiceNumber;
         $this->forDelete = false;
     }
 
@@ -31,7 +31,21 @@ class InvoiceItem
 //        $this->quantity = $data['quantity'];
 //    }
 
+    /**
+     * @return mixed
+     */
+    public function getInvoiceNumber()
+    {
+        return $this->invoiceNumber;
+    }
 
+    /**
+     * @param mixed $invoiceNumber
+     */
+    public function setInvoiceNumber($invoiceNumber): void
+    {
+        $this->invoiceNumber = $invoiceNumber;
+    }
 
 
     public function getInvoiceId()
