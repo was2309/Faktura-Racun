@@ -1,16 +1,16 @@
 <?php
-
-class Invoice
+include_once 'DTOItem.php';
+class DTOInvoice
 {
-    private $invoiceId;
-    private $invoiceNumber;
+    private int $invoiceNumber;
     private $date;
-    private $organization;
+    private string $organization;
 
     /**
-     * @var InvoiceItem[]
+     * @var DTOItem[]
      */
     private array $items = array();
+
 
     public function __construct()
     {
@@ -18,84 +18,70 @@ class Invoice
     }
 
     /**
-     * @return mixed
+     * @return int
      */
-    public function getInvoiceId()
-    {
-        return $this->invoiceId;
-    }
-
-    /**
-     * @param mixed $invoiceId
-     */
-    public function setInvoiceId($invoiceId): void
-    {
-        $this->invoiceId = $invoiceId;
-    }
-
-//    public function __serialize(): array
-//    {
-//        return [
-//          'invoiceNumber'=> $this->invoiceNumber,
-//          'date'=>$this->date,
-//          'organization'=>$this->organization
-//        ];
-//    }
-//
-//
-//    public function __unserialize(array $data): void
-//    {
-//        $this->invoiceNumber = $data['invoiceNumber'];
-//        $this->date = $data['date'];
-//        $this->organization = $data['organization'];
-//    }
-
-
-
-    public function getInvoiceNumber()
+    public function getInvoiceNumber(): int
     {
         return $this->invoiceNumber;
     }
 
-    public function setInvoiceNumber($invoiceNumber): void
+    /**
+     * @param int $invoiceNumber
+     */
+    public function setInvoiceNumber(int $invoiceNumber): void
     {
         $this->invoiceNumber = $invoiceNumber;
     }
 
-
+    /**
+     * @return mixed
+     */
     public function getDate()
     {
         return $this->date;
     }
 
-
+    /**
+     * @param mixed $date
+     */
     public function setDate($date): void
     {
         $this->date = $date;
     }
 
-    public function getOrganization(){
+    /**
+     * @return string
+     */
+    public function getOrganization(): string
+    {
         return $this->organization;
     }
 
-    public function setOrganization($organization):void
+    /**
+     * @param string $organization
+     */
+    public function setOrganization(string $organization): void
     {
         $this->organization = $organization;
     }
 
-
-    public function getItems():array
+    /**
+     * @return DTOItem[]
+     */
+    public function getItems(): array
     {
         return $this->items;
     }
 
-
-    public function setItems($items): void
+    /**
+     * @param DTOItem[] $items
+     */
+    public function setItems(array $items): void
     {
         $this->items = $items;
     }
 
-    public function addNewItem(InvoiceItem $item):void{
+    public function addItem(DTOItem $item){
         if($item->getItemName() === null || $item->getQuantity() === null){
             return;
         }
@@ -112,7 +98,7 @@ class Invoice
         $this->items[] = $item;
     }
 
-    public function removeItem(InvoiceItem $item):void{
+    public function removeItem(DTOItem $item){
         if($item->getItemName() === null || $item->getQuantity() === null){
             return;
         }
@@ -125,7 +111,6 @@ class Invoice
             }
             $count++;
         }
-
     }
 
 }

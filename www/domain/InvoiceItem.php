@@ -2,7 +2,7 @@
 
 class InvoiceItem
 {
-    private $invoiceNumber;
+    private $invoiceId;
     private $itemID;
     private $itemName;
     private $quantity;
@@ -12,7 +12,7 @@ class InvoiceItem
 
     public function __construct($invoiceNumber)
     {
-        $this->invoiceNumber = $invoiceNumber;
+        $this->invoiceId = $invoiceNumber;
         $this->forDelete = false;
     }
 
@@ -34,15 +34,15 @@ class InvoiceItem
 
 
 
-    public function getInvoiceNumber()
+    public function getInvoiceId()
     {
-        return $this->invoiceNumber;
+        return $this->invoiceId;
     }
 
 
-    public function setInvoiceNumber($invoiceNumber): void
+    public function setInvoiceId($invoiceId): void
     {
-        $this->invoiceNumber = $invoiceNumber;
+        $this->invoiceId = $invoiceId;
     }
 
 

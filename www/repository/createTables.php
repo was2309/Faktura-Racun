@@ -24,9 +24,11 @@
 //    }
 
     $query_invoice = "CREATE TABLE invoice(
-                        invoice_number int(11) NOT NULL PRIMARY KEY,
+                        invoice_id int(11) NOT NULL AUTO_INCREMENT,
+                        invoice_number int(11) NOT NULL,
                         date DATE,
-                        organization varchar(255)
+                        organization varchar(255),
+                        PRIMARY KEY (invoice_id, invoice_number)
                         );";
 
     if($conn->query($query_invoice) === TRUE){
@@ -36,12 +38,13 @@
     }
 
     $query_item = "CREATE TABLE invoice_item(
+                            invoice_id int(11) NOT NULL,
                             invoice_number int(11) NOT NULL,
                             item_id int(11) NOT NULL AUTO_INCREMENT,
                             item_name varchar(255) NOT NULL,
                             quantity int,
-                            PRIMARY KEY (invoice_number, item_id),
-                            FOREIGN KEY (invoice_number) REFERENCES invoice(invoice_number) 
+                            PRIMARY KEY (invoice_id, invoice_number, item_id),
+                            FOREIGN KEY (invoice_id, invoice_number) REFERENCES invoice(invoice_id, invoice_number) 
                             );";
 
     if($conn->query($query_item) === TRUE){
