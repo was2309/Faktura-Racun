@@ -145,7 +145,7 @@ if (isset($_POST['add'])) {
     $DTOInvoice->setOrganization($organization);
     $_SESSION['invoiceNumber'] = $invoiceNumber;
     $_SESSION['date'] = $date;
-    $_SESSION['organization'] = $date;
+    $_SESSION['organization'] = $organization;
     $_SESSION['dtoInvoice'] = serialize($DTOInvoice);
 }
 
@@ -208,38 +208,38 @@ if(isset($_POST['save'])){
             <div class="input_group">
                 <label>Broj računa: </label>
                 <input type="number" name="invoiceNumber" id="invoiceNumber" class="input_invoice_number" value="<?php
-                echo $invoiceNumber;
+                echo $_SESSION['invoiceNumber'];
                 ?>" placeholder=""><br>
             </div>
             <div class="input_group">
                 <label>Datum: </label>
                 <input type="date" name="date" id="date" value="<?php
-                echo $date;
+                echo $_SESSION['date'];
                 ?>"><br>
             </div>
             <div class="input_group">
                 <label>Organizacija: </label><select name="organization" id="organization">
                     <option value=""></option>
                     <option value="Samsung" <?php
-                    if ($organization === 'Samsung') {
+                    if ($_SESSION['organization'] === 'Samsung') {
                         echo ' selected';
                     }
                     ?>>Samsung
                     </option>
                     <option value="Volvo" <?php
-                    if ($organization === 'Volvo') {
+                    if ($_SESSION['organization'] === 'Volvo') {
                         echo ' selected';
                     }
                     ?>>Volvo
                     </option>
                     <option value="Nestle" <?php
-                    if ($organization === 'Nestle') {
+                    if ($_SESSION['organization'] === 'Nestle') {
                         echo ' selected';
                     }
                     ?>>Nestle
                     </option>
                     <option value="GSP" <?php
-                    if ($organization === 'GSP') {
+                    if ($_SESSION['organization'] === 'GSP') {
                         echo ' selected';
                     }
                     ?>>GSP

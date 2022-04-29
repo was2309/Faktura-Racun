@@ -1,6 +1,7 @@
 <?php
-include_once '../../domain/Invoice.php';
-include_once '../../domain/InvoiceItem.php';
+include_once __DIR__ .  '/../../domain/Invoice.php';
+include_once __DIR__ .  '/../../domain/InvoiceItem.php';
+include_once __DIR__ .  '/../../repository/InvoiceRepositoryMySQLImpl.php';
 class InvoiceServiceImplementation implements InvoiceService
 {
     private $invoiceRepository;
@@ -18,7 +19,6 @@ class InvoiceServiceImplementation implements InvoiceService
         $items = array();
         foreach ($DTOInvoice->getItems() as $item){
             $i = new InvoiceItem();
-            $i->setInvoiceNumber($item->getInvoiceNumber());
             $i->setItemName($item->getItemName());
             $i->setQuantity($item->getQuantity());
             $i->setIsNew($item->isNew());

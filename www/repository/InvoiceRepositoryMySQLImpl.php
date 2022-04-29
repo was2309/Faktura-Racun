@@ -2,6 +2,7 @@
 include_once 'createdb.php';
 include_once 'createTables.php';
 include 'connection.php';
+include_once 'InvoiceRepository.php';
 class InvoiceRepositoryMySQLImpl implements InvoiceRepository
 {
 
@@ -30,14 +31,13 @@ class InvoiceRepositoryMySQLImpl implements InvoiceRepository
 
 
             $items = $invoice->getItems();
-            $sql_items = "INSERT INTO invoice_item (invoice_id, invoice_number, item_name, quantity) VALUES (?, ?, ?) ";
+            $sql_items = "INSERT INTO invoice_item (invoice_id, item_name, quantity) VALUES (?, ?, ?) ";
             $stmt_items = $conn->prepare($sql_items);
             foreach ($items as $item){
                 $invoiceId = $lastID;
-                $invoiceNum = $item->getInvoiceId();
                 $itemName = $item->getItemName();
                 $itemQuantity = $item->getQuantity();
-                $stmt_items->bind_param("iisi",$invoiceId, $invoiceNum,  $itemName, $itemQuantity);
+                $stmt_items->bind_param("isi",$invoiceId, $itemName, $itemQuantity);
                 $stmt_items->execute();
             }
 

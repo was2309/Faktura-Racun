@@ -3,7 +3,6 @@
 class InvoiceItem
 {
     private $invoiceId;
-    private $invoiceNumber;
     private $itemID;
     private $itemName;
     private $quantity;
@@ -30,22 +29,6 @@ class InvoiceItem
 //        $this->itemName = $data['itemName'];
 //        $this->quantity = $data['quantity'];
 //    }
-
-    /**
-     * @return mixed
-     */
-    public function getInvoiceNumber()
-    {
-        return $this->invoiceNumber;
-    }
-
-    /**
-     * @param mixed $invoiceNumber
-     */
-    public function setInvoiceNumber($invoiceNumber): void
-    {
-        $this->invoiceNumber = $invoiceNumber;
-    }
 
 
     public function getInvoiceId()
