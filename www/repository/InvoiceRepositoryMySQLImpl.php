@@ -67,6 +67,7 @@ class InvoiceRepositoryMySQLImpl implements InvoiceRepository
         $stmt->execute();
 
         $result = $stmt->get_result();
+        $invoiceID = 0;
         if($result->num_rows > 0){
             while($row = $result->fetch_assoc()){
                 $invoice->setInvoiceId($row['invoice_id']);
@@ -74,14 +75,16 @@ class InvoiceRepositoryMySQLImpl implements InvoiceRepository
                 $invoice->setDate($row['date']);
                 $invoice->setOrganization($row['organization']);
             }
+            $invoiceID = $invoice->getInvoiceId();
         }else{
             echo "<script>alert('Ne postoji faktura sa navedenim brojem! ')</script>";
+            $conn->close();
             return $invoice;
         }
 
-        $sql_invoice_item = "SELECT * FROM invoice_item WHERE invoice_number=?";
+        $sql_invoice_item = "SELECT * FROM invoice_item WHERE invoice_id=?";
         $stmt_item = $conn->prepare($sql_invoice_item);
-        $stmt_item->bind_param("i", $invoiceNumber);
+        $stmt_item->bind_param("i", $invoiceID);
         $stmt_item->execute();
 
         $result_item = $stmt_item->get_result();
@@ -89,7 +92,8 @@ class InvoiceRepositoryMySQLImpl implements InvoiceRepository
 
         if($result_item->num_rows > 0){
             while($row = $result_item->fetch_assoc()){
-                $item = new InvoiceItem($row['invoice_number']);
+                $item = new InvoiceItem();
+                $item->setInvoiceId($row['invoice_id']);
                 $item->setItemID($row['item_id']);
                 $item->setItemName($row['item_name']);
                 $item->setQuantity($row['quantity']);

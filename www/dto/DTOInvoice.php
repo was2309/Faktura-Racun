@@ -2,6 +2,7 @@
 include_once 'DTOItem.php';
 class DTOInvoice
 {
+    private $invoiceId;
     private int $invoiceNumber;
     private $date;
     private string $organization;
@@ -16,6 +17,24 @@ class DTOInvoice
     {
 
     }
+
+    /**
+     * @return mixed
+     */
+    public function getInvoiceId()
+    {
+        return $this->invoiceId;
+    }
+
+    /**
+     * @param mixed $invoiceId
+     */
+    public function setInvoiceId($invoiceId): void
+    {
+        $this->invoiceId = $invoiceId;
+    }
+
+
 
     /**
      * @return int

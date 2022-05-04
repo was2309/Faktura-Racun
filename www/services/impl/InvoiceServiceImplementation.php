@@ -2,6 +2,8 @@
 include_once __DIR__ .  '/../../domain/Invoice.php';
 include_once __DIR__ .  '/../../domain/InvoiceItem.php';
 include_once __DIR__ .  '/../../repository/InvoiceRepositoryMySQLImpl.php';
+include_once __DIR__ .  '/../../dto/DTOInvoice.php';
+include_once __DIR__ .  '/../../dto/DTOItem.php';
 class InvoiceServiceImplementation implements InvoiceService
 {
     private $invoiceRepository;
@@ -33,7 +35,27 @@ class InvoiceServiceImplementation implements InvoiceService
 
     public function findById(int $invoiceNumber): DTOInvoice
     {
-       // return $this->invoiceRepository->findById($invoiceNumber);
+       $invoice = $this->invoiceRepository->findById($invoiceNumber);
+       $DTOInvoice = new DTOInvoice();
+       if($invoice->getInvoiceNumber() !== null){
+           $DTOInvoice->setInvoiceId($invoice->getInvoiceId());
+           $DTOInvoice->setInvoiceNumber($invoice->getInvoiceNumber());
+           $DTOInvoice->setDate($invoice->getDate());
+           $DTOInvoice->setOrganization($invoice->getOrganization());
+           $items = array();
+           foreach ($invoice->getItems() as $item){
+                $DTOItem = new DTOItem();
+                $DTOItem->setInvoiceId($item->getInvoiceId());
+                $DTOItem->setItemName($item->getItemName());
+                $DTOItem->setQuantity($item->getQuantity());
+                $DTOItem->setIsNew($item->isNew());
+                $items[] = $DTOItem;
+           }
+           $DTOInvoice->setItems($items);
+
+       }
+
+       return $DTOInvoice;
     }
 
     public function update(int $invoiceNumber, DTOInvoice $DTOInvoice): DTOInvoice
