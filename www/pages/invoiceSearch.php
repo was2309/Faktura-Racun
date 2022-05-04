@@ -20,92 +20,6 @@
 <body>
 <?php
 
-//    $invoice = new Invoice();
-
-
-
-//    if (isset($_POST['search'])) {
-//        if(empty($_POST['invoiceNumber'])) {
-//            echo '<script>alert("Molimo unesite broj fakture!")</script>';
-//        } else {
-//            $sql_invoice = "SELECT * FROM invoice WHERE invoice_number=?";
-//            $stmt = $conn->prepare($sql_invoice);
-//            $stmt->bind_param("i", $_POST['invoiceNumber']);
-//            $stmt->execute();
-//
-//            $result = $stmt->get_result();
-//            if($result->num_rows > 0){
-//                while($row = $result->fetch_assoc()){
-//                    $invoice->setInvoiceNumber($row['invoice_number']);
-//                    $invoice->setDate($row['date']);
-//                    $invoice->setOrganization($row['organization']);
-//                }
-//            }else{
-//                echo "<script>alert('Ne postoji račun sa navedenim brojem! ')</script>";
-//            }
-//
-//            $sql_invoice_item = "SELECT * FROM invoice_item WHERE invoice_number=?";
-//            $stmt_item = $conn->prepare($sql_invoice_item);
-//            $stmt_item->bind_param("i", $_POST['invoiceNumber']);
-//            $stmt_item->execute();
-//
-//            $result_item = $stmt_item->get_result();
-//            $items = array();
-//
-//            if($result_item->num_rows > 0){
-//                while($row = $result_item->fetch_assoc()){
-//                    $item = new InvoiceItem($row['invoice_number']);
-//                    $item->setItemID($row['item_id']);
-//                    $item->setItemName($row['item_name']);
-//                    $item->setQuantity($row['quantity']);
-//                    $item->setIsNew(false);
-//                    $items[] = $item;
-//                }
-//            }
-//
-//            $invoice->setItems($items);
-//            $conn->close();
-//            $_SESSION['invoice'] = serialize($invoice);
-//        }
-//
-//    }
-//
-//    if (isset($_SESSION['invoice'])) {
-//        $invoice = unserialize($_SESSION['invoice'], ['allowed_class' => true]);
-//    }
-//
-//    if (isset($_POST['saveItem'])) {
-//        $item = new InvoiceItem($invoice->getInvoiceNumber());
-//
-//        if ($_POST['itemName'] === '' || empty($_POST['quantity'])) {
-//            echo '<script>alert("Podaci o stavci nisu validni!")</script>';
-//        }else {
-//            $item->setItemName($_POST['itemName']);
-//            $item->setQuantity($_POST['quantity']);
-//            $item->setIsNew(true);
-//            $invoice->addNewItem($item);
-//
-//            $_SESSION['invoice'] = serialize($invoice);
-//        }
-//    }
-//
-//
-//    if(isset($_POST['removeItemBtn'])){
-//        $items = $invoice->getItems();
-//        foreach($items as $item){
-//            if($item->getItemName() === $_POST['removeItemBtn']){
-//                if(!$item->isNew()){
-//                    $item->setForDelete(true);
-//                    $_SESSION['itemForDelete'] = serialize($item);
-//                    $_SESSION['removingItems'][] = $_SESSION['itemForDelete'];
-//                }
-//                $invoice->removeItem($item);
-//                $_SESSION['invoice'] = serialize($invoice);
-//                break;
-//            }
-//        }
-//    }
-//
 //    if(isset($_POST['update'])){
 //        if(!isset($_SESSION['invoice'])){
 //            echo '<script>alert("Molimo izaberite fakturu koju želite da izmenite!")</script>';
@@ -243,6 +157,62 @@ if (isset($_POST['search'])) {
         }
 }
 
+if (isset($_POST['saveItem'])) {
+    if(!isset($_SESSION['invoiceNumber']) || $DTOInvoice === null){
+        echo "Molimo unesite fakturu pre nego što dodate stavku!";
+        return;
+    }
+    $invoiceNumber = $_SESSION['invoiceNumber'];
+    $itemName = $_POST['itemName'];
+    $quantity = $_POST['quantity'];
+    $DTOItem = new DTOItem();
+    $DTOItem->setInvoiceNumber($invoiceNumber);
+    $DTOItem->setIsNew(true);
+    if(isset($_POST['itemName']) && $_POST['itemName'] !== ""){
+        $DTOItem->setItemName($itemName);
+    }else{
+        echo " Molimo unesite naziv artikla! ";
+    }
+
+    if(isset($_POST['quantity']) && $_POST['quantity'] !== ""){
+        $DTOItem->setQuantity($quantity);
+    }
+    else{
+        echo " Molimo unesite količinu artikla! ";
+    }
+
+    if($DTOItem->getInvoiceNumber() !== null && $DTOItem->getItemName() !== null && $DTOItem->getQuantity() !== null){
+        $DTOInvoice->addItem($DTOItem);
+        $_SESSION['dtoInvoice'] = serialize($DTOInvoice);
+    }
+}
+
+if(isset($_POST['removeItemBtn'])){
+    $items = $DTOInvoice->getItems();
+    foreach ($items as $item){
+        if($item->getItemName() === $_POST['removeItemBtn']){
+            if(!$item->isNew()){
+                $item->setForDelete(true);
+            }else{
+                $DTOInvoice->removeItem($item);
+            }
+            $_SESSION['dtoInvoice'] = serialize($DTOInvoice);
+            break;
+        }
+    }
+}
+
+if(isset($_POST['update'])){
+    if(!isset($_SESSION['invoice'])){
+                echo '<script>alert("Molimo izaberite fakturu koju želite da izmenite!")</script>';
+                return;
+    }
+
+    $DTOInvoice = unserialize($_SESSION['dtoInvoice'], ['allowed_class' => true]);
+    $DTOInvoice = $invoiceController->update($DTOInvoice);
+}
+
+
 
 ?>
     <div class="links">
@@ -337,6 +307,7 @@ if (isset($_POST['search'])) {
                 <?php
                 $count = 0;
                 foreach ($DTOInvoice->getItems() as $item) {
+                    if(!$item->isForDelete()){
                     $count++;
                     ?>
                     <tr>
@@ -355,7 +326,8 @@ if (isset($_POST['search'])) {
                             </button>
                         </td>
                     </tr>
-                <?php } ?>
+                <?php }
+                } ?>
                 </thead>
                 <tbody>
 

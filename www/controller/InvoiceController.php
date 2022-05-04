@@ -50,7 +50,6 @@ class InvoiceController
         $DTOInvoice = new DTOInvoice();
         if($invoice_number < 1){
             echo "Molimo unesite ispravan broj fakture koju pretražujete! ";
-            $DTOInvoice = null;
             return $DTOInvoice;
         }
         $DTOInvoice = $this->invoiceService->findById($invoice_number);
@@ -60,7 +59,45 @@ class InvoiceController
         return $DTOInvoice;
     }
 
+    public function update(DTOInvoice $DTOInvoice):DTOInvoice{
+        $DTOInv = new DTOInvoice();
+        if(!isset($DTOInvoice)){
+            echo "Molimo unesite fakturu koju hoćete da izmenite! ";
+            return $DTOInv;
+        }
+        if($DTOInvoice->getInvoiceNumber() === null || $DTOInvoice->getInvoiceNumber()<1){
+            echo "Molimo unesite ispravan broj fakture!";
+            return $DTOInv;
+        }
+        if($DTOInvoice->getDate()===null){
+            echo "Molimo unesite ispravan datum fakture!";
+            return $DTOInv;
+        }
+        if(empty($DTOInvoice->getOrganization())){
+            echo "Molimo izaberite organizaciju!";
+            return $DTOInv;
+        }
+        if($DTOInvoice->getItems() !== null){
+            foreach ($DTOInvoice->getItems() as $item){
+                if(empty($item->getItemName())){
+                    echo "Molimo unesite naziv stavke, kako bi ona mogla biti sacuvana!";
+                    return $DTOInv;
+                }
+                if(empty($item->getQuantity())){
+                    echo "Molimo unesite kolicinu stavke, kako bi ona mogla biti sacuvana!";
+                    return $DTOInv;
+                }
+            }
+        }
+        $invoiceNum = $DTOInvoice->getInvoiceNumber();
+        $DTOInv = $this->invoiceService->update($invoiceNum, $DTOInvoice);
 
+        if($DTOInv->getInvoiceId()=== null){
+            echo "Faktura nije ažurirana! ";
+        }
+        return $DTOInv;
+
+    }
 
 
 
