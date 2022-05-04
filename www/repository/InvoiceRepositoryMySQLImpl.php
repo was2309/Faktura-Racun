@@ -1,13 +1,15 @@
 <?php
 include_once 'createdb.php';
 include_once 'createTables.php';
-include 'connection.php';
+include 'DBConnection.php';
 include_once 'InvoiceRepository.php';
 class InvoiceRepositoryMySQLImpl implements InvoiceRepository
 {
 
+
     public function save(Invoice $invoice): void
     {
+        $conn = DBConnection::getInstance()->connect();
         $conn->autocommit(FALSE);
         $invoiceNumber = $invoice->getInvoiceNumber();
         $invoiceDate = $invoice->getDate();
@@ -57,6 +59,7 @@ class InvoiceRepositoryMySQLImpl implements InvoiceRepository
 
     public function findById(int $invoiceNumber): Invoice
     {
+        $conn = DBConnection::getInstance()->connect();
         $invoice = new Invoice();
         $sql_invoice = "SELECT * FROM invoice WHERE invoice_number=?";
         $stmt = $conn->prepare($sql_invoice);
@@ -103,6 +106,7 @@ class InvoiceRepositoryMySQLImpl implements InvoiceRepository
 
     public function update(Invoice $invoice): Invoice
     {
+        $conn = DBConnection::getInstance()->connect();
         $conn->autocommit(false);
         $conn->begin_transaction();
         try{
@@ -159,6 +163,7 @@ class InvoiceRepositoryMySQLImpl implements InvoiceRepository
 
     public function delete(Invoice $invoice): void
     {
+        $conn = DBConnection::getInstance()->connect();
         $conn->autocommit(false);
 
         $conn->begin_transaction();
@@ -191,6 +196,7 @@ class InvoiceRepositoryMySQLImpl implements InvoiceRepository
 
     public function checkIfExists(int $invoiceNumber): bool
     {
+        $conn = DBConnection::getInstance()->connect();
         $sql_invoice = "SELECT * FROM invoice WHERE invoice_number=?";
         $stmt = $conn->prepare($sql_invoice);
         $stmt->bind_param("i", $invoiceNumber);

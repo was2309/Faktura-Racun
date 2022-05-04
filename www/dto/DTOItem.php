@@ -3,8 +3,8 @@
 class DTOItem
 {
     private int $invoiceNumber;
-    private string $itemName;
-    private int $quantity;
+    private $itemName;
+    private $quantity;
 
     private bool $isNew;
     private bool $forDelete;
@@ -30,34 +30,26 @@ class DTOItem
         $this->invoiceNumber = $invoiceNumber;
     }
 
-    /**
-     * @return string
-     */
-    public function getItemName(): string
+
+    public function getItemName()
     {
         return $this->itemName;
     }
 
-    /**
-     * @param string $itemName
-     */
+
     public function setItemName(string $itemName): void
     {
         $this->itemName = $itemName;
     }
 
-    /**
-     * @return int
-     */
-    public function getQuantity(): int
+
+    public function getQuantity()
     {
         return $this->quantity;
     }
 
-    /**
-     * @param int $quantity
-     */
-    public function setQuantity(int $quantity): void
+
+    public function setQuantity(int $quantity)
     {
         $this->quantity = $quantity;
     }

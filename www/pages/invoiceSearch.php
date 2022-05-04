@@ -2,7 +2,7 @@
     session_start();
     include_once '../domain/Invoice.php';
     include_once '../domain/InvoiceItem.php';
-    include '../repository/connection.php';
+    include '../repository/DBConnection.php';
 ?>
 
 <!doctype html>

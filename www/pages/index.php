@@ -24,7 +24,7 @@
 //require_once '../domain/InvoiceItem.php';
 //include_once '../repository/createdb.php';
 //include_once '../repository/createTables.php';
-//include '../repository/connection.php';
+//include '../repository/DBConnection.php';
 //
 //
 //$invoice = new Invoice();
@@ -140,12 +140,26 @@ if (isset($_POST['add'])) {
     $invoiceNumber = $_POST['invoiceNumber'];
     $date = $_POST['date'];
     $organization = $_POST['organization'];
-    $DTOInvoice->setInvoiceNumber($invoiceNumber);
-    $DTOInvoice->setDate($date);
-    $DTOInvoice->setOrganization($organization);
-    $_SESSION['invoiceNumber'] = $invoiceNumber;
-    $_SESSION['date'] = $date;
-    $_SESSION['organization'] = $organization;
+    if(isset($_POST['invoiceNumber']) && $_POST['invoiceNumber'] !== ""){
+        $DTOInvoice->setInvoiceNumber($invoiceNumber);
+        $_SESSION['invoiceNumber'] = $invoiceNumber;
+    }else{
+        echo " Molimo unesite broj fakture! ";
+    }
+
+    if(isset($_POST['date']) && $_POST['date'] !== ""){
+        $DTOInvoice->setDate($date);
+        $_SESSION['date'] = $date;
+    }else{
+        echo " Molimo unesite datum! ";
+    }
+
+    if(isset($_POST['organization']) && $_POST['organization'] !== ""){
+        $DTOInvoice->setOrganization($organization);
+        $_SESSION['organization'] = $organization;
+    }else{
+        echo " Molimo izaberite organizaciju! ";
+    }
     $_SESSION['dtoInvoice'] = serialize($DTOInvoice);
 }
 
@@ -159,19 +173,26 @@ if (isset($_POST['saveItem'])) {
     $quantity = $_POST['quantity'];
     $DTOItem = new DTOItem();
     $DTOItem->setInvoiceNumber($invoiceNumber);
-    $DTOItem->setItemName($itemName);
-    $DTOItem->setQuantity($quantity);
     $DTOItem->setIsNew(true);
-    $DTOInvoice->addItem($DTOItem);
-    $_SESSION['dtoInvoice'] = serialize($DTOInvoice);
-//    $items = $_SESSION['items'];
-//    if($items === null){
-//        $items = array();
-//        $items[] = array("ordNum"=>1, "itemName"=>$itemName, "quantity"=>$quantity);
-//        return;
-//    }
-//    $items[] = array("ordNum"=>count($items), "itemName"=>$itemName, "quantity"=>$quantity);
-//    $_SESSION['items'] = $items;
+    if(isset($_POST['itemName']) && $_POST['itemName'] !== ""){
+        $DTOItem->setItemName($itemName);
+    }else{
+        echo " Molimo unesite naziv artikla! ";
+    }
+
+    if(isset($_POST['quantity']) && $_POST['quantity'] !== ""){
+        $DTOItem->setQuantity($quantity);
+    }
+    else{
+        echo " Molimo unesite količinu artikla! ";
+    }
+
+    if($DTOItem->getInvoiceNumber() !== null && $DTOItem->getItemName() !== null && $DTOItem->getQuantity() !== null){
+        $DTOInvoice->addItem($DTOItem);
+        $_SESSION['dtoInvoice'] = serialize($DTOInvoice);
+    }
+
+
 }
 
 if (isset($_POST['removeItemBtn'])) {
@@ -193,6 +214,7 @@ if(isset($_POST['save'])){
 
     $DTOInvoice = unserialize($_SESSION['dtoInvoice'], ['allowed_class' => true]);
     $invoiceController->save($DTOInvoice);
+    $DTOInvoice = new DTOInvoice();
 }
 
 ?>
@@ -208,38 +230,46 @@ if(isset($_POST['save'])){
             <div class="input_group">
                 <label>Broj računa: </label>
                 <input type="number" name="invoiceNumber" id="invoiceNumber" class="input_invoice_number" value="<?php
-                echo $_SESSION['invoiceNumber'];
+                if(!isset($_SESSION['invoiceNumber'])){
+                    echo "";
+                } else{
+                    echo $_SESSION['invoiceNumber'];
+                }
                 ?>" placeholder=""><br>
             </div>
             <div class="input_group">
                 <label>Datum: </label>
                 <input type="date" name="date" id="date" value="<?php
-                echo $_SESSION['date'];
+                if(!isset($_SESSION['date'])){
+                    echo "";
+                } else{
+                    echo $_SESSION['date'];
+                }
                 ?>"><br>
             </div>
             <div class="input_group">
                 <label>Organizacija: </label><select name="organization" id="organization">
                     <option value=""></option>
                     <option value="Samsung" <?php
-                    if ($_SESSION['organization'] === 'Samsung') {
+                    if (isset($_SESSION['organization']) && $_SESSION['organization'] === 'Samsung') {
                         echo ' selected';
                     }
                     ?>>Samsung
                     </option>
                     <option value="Volvo" <?php
-                    if ($_SESSION['organization'] === 'Volvo') {
+                    if (isset($_SESSION['organization']) &&  $_SESSION['organization'] === 'Volvo') {
                         echo ' selected';
                     }
                     ?>>Volvo
                     </option>
                     <option value="Nestle" <?php
-                    if ($_SESSION['organization'] === 'Nestle') {
+                    if (isset($_SESSION['organization']) && $_SESSION['organization'] === 'Nestle') {
                         echo ' selected';
                     }
                     ?>>Nestle
                     </option>
                     <option value="GSP" <?php
-                    if ($_SESSION['organization'] === 'GSP') {
+                    if (isset($_SESSION['organization']) && $_SESSION['organization'] === 'GSP') {
                         echo ' selected';
                     }
                     ?>>GSP

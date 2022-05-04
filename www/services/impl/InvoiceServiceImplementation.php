@@ -28,6 +28,7 @@ class InvoiceServiceImplementation implements InvoiceService
         $invoice->setItems($items);
 
         $this->invoiceRepository->save($invoice);
+        session_unset();
     }
 
     public function findById(int $invoiceNumber): DTOInvoice
