@@ -20,69 +20,6 @@
 <body>
 <?php
 
-//    if(isset($_POST['update'])){
-//        if(!isset($_SESSION['invoice'])){
-//            echo '<script>alert("Molimo izaberite fakturu koju želite da izmenite!")</script>';
-//            return;
-//        }
-//
-//        $conn->autocommit(false);
-//
-//        $invoice = unserialize($_SESSION['invoice'], ['allowed_class' => Invoice::class]);
-//        if(isset($_POST['date'])){
-//            $invoice->setDate($_POST['date']);
-//        }
-//        if(isset($_POST['organization'])){
-//            $invoice->setOrganization($_POST['organization']);
-//        }
-//        $sql_invoice = "UPDATE invoice SET date=?, organization=? WHERE invoice_number=?";
-//        $stmt = $conn->prepare($sql_invoice);
-//        $invoiceNumber = $invoice->getInvoiceNumber();
-//        $invoiceDate = $invoice->getDate();
-//        $invoiceOrganization = $invoice->getOrganization();
-//        $stmt->bind_param("ssi",$invoiceDate, $invoiceOrganization, $invoiceNumber);
-//        $stmt->execute();
-//
-//        $conn->begin_transaction();
-//
-//        try{
-//            $items = $invoice->getItems();
-//            $sql_insertItems = "INSERT INTO invoice_item (invoice_number, item_name, quantity) VALUES (?, ?, ?)";
-//            $stmt_insertItems = $conn->prepare($sql_insertItems);
-//            foreach ($items as $item){
-//                if($item->isNew()){
-//                    $invoiceNum = $item->getInvoiceNumber();
-//                    $itemName = $item->getItemName();
-//                    $itemQuantity = $item->getQuantity();
-//                    $stmt_insertItems->bind_param("isi",$invoiceNum,  $itemName, $itemQuantity);
-//                    $stmt_insertItems->execute();
-//                }
-//            }
-//
-//            if(isset($_SESSION['removingItems']) && !empty($_SESSION['removingItems'])){
-//                $sql_deleteItems = "DELETE FROM invoice_item WHERE item_id=?";
-//                $stmt_deleteItems = $conn->prepare($sql_deleteItems);
-//                foreach ($_SESSION['removingItems'] as $item){
-//                    $itemForDelete = unserialize($item, ['allowed_class' => true]);
-//                    $itemID = $itemForDelete->getItemID();
-//                    $stmt_deleteItems->bind_param("i", $itemID);
-//                    $stmt_deleteItems->execute();
-//                }
-//            }
-//
-//            $conn->commit();
-//            echo "Uspešno ažurirana faktura!";
-//
-//        }catch(mysqli_sql_exception $exception){
-//            $conn->rollback();
-//            echo "Greška prilikom ažuriranja fakture!";
-//            throw $exception;
-//        } finally {
-//            $conn->close();
-//            session_unset();
-//            $_POST = array();
-//        }
-//    }
 
 //    if(isset($_POST['delete'])){
 //        if(!isset($_SESSION['invoice'])){
@@ -219,6 +156,16 @@ if(isset($_POST['update'])){
     $_SESSION['dtoInvoice'] = serialize($DTOInvoice);
 }
 
+if(isset($_POST['delete'])) {
+    if (!isset($_SESSION['dtoInvoice'])) {
+        echo '<script>alert("Molimo izaberite fakturu koju želite da obrišete!")</script>';
+        return;
+    }
+
+    $DTOInvoice = unserialize($_SESSION['dtoInvoice'], ['allowed_class' => true]);
+    $invoiceController->delete($DTOInvoice);
+    $DTOInvoice = new DTOInvoice();
+}
 
 
 ?>

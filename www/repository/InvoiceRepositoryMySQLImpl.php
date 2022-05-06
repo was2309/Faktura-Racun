@@ -168,23 +168,26 @@ class InvoiceRepositoryMySQLImpl implements InvoiceRepository
         }
     }
 
-    public function delete(Invoice $invoice): void
+    public function delete(int $invoiceId, int $invoiceNumber): void
     {
         $conn = DBConnection::getInstance()->connect();
         $conn->autocommit(false);
 
         $conn->begin_transaction();
 
+        if(!$this->checkIfExists($invoiceNumber)){
+            echo "Tražena faktura ne postoji! ";
+            return;
+        }
         try{
-            $invoiceNumb = $invoice->getInvoiceNumber();
-            $sql_items = "DELETE FROM invoice_item WHERE invoice_number=?";
+            $sql_items = "DELETE FROM invoice_item WHERE invoice_id=?";
             $stmt_items = $conn->prepare($sql_items);
-            $stmt_items->bind_param("i", $invoiceNumb);
+            $stmt_items->bind_param("i", $invoiceId);
             $stmt_items->execute();
 
-            $sql_invoice = "DELETE FROM invoice WHERE invoice_number=?";
+            $sql_invoice = "DELETE FROM invoice WHERE invoice_id=?";
             $stmt_invoice = $conn->prepare($sql_invoice);
-            $stmt_invoice->bind_param("i", $invoiceNumb);
+            $stmt_invoice->bind_param("i", $invoiceId);
             $stmt_invoice->execute();
 
             $conn->commit();

@@ -38,9 +38,9 @@ class InvoiceServiceImplementation implements InvoiceService
         return $DTOInv;
     }
 
-    public function delete(int $invoiceNumber): void
+    public function delete(int $invoiceId, int $invoiceNumber): void
     {
-        // TODO: Implement delete() method.
+        $this->invoiceRepository->delete($invoiceId, $invoiceNumber);
     }
 
     public function InvoiceToDTO(Invoice $invoice):DTOInvoice{

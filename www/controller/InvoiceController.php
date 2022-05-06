@@ -101,6 +101,17 @@ class InvoiceController
 
     }
 
+    public function delete(DTOInvoice $DTOInvoice):void{
+        $invoiceID = $DTOInvoice->getInvoiceId();
+        $invoiceNumber = $DTOInvoice->getInvoiceNumber();
+        if($invoiceID < 1 || $invoiceNumber < 1){
+            echo "Molimo unesite ispravan broj fakute koju želite da obrišete! ";
+            return;
+        }
+
+        $this->invoiceService->delete($invoiceID, $invoiceNumber);
+    }
+
 
 
 
