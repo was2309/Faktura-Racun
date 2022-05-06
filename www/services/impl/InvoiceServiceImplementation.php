@@ -31,11 +31,9 @@ class InvoiceServiceImplementation implements InvoiceService
         $invoice = $this->DTOToInvoice($DTOInvoice);
 
         $inv = $this->invoiceRepository->update($invoice);
-        $invID = $inv->getInvoiceId();
+        //$invID = $inv->getInvoiceId();
 
-        $DTOInv = $this->InvoiceToDTO($inv);
-
-        return $DTOInv;
+        return $this->InvoiceToDTO($inv);
     }
 
     public function delete(int $invoiceId, int $invoiceNumber): void
@@ -89,29 +87,6 @@ class InvoiceServiceImplementation implements InvoiceService
         $invoice->setItems($items);
         return $invoice;
     }
-
-
-//    public function addInvoice(int $invoiceNumber, $date, string $organization): void
-//    {
-//        $invoice = new Invoice();
-//        $invoice->setInvoiceNumber($invoiceNumber);
-//        $invoice->setDate($date);
-//        $invoice->setOrganization($organization);
-//    }
-//
-//    public function createItem(int $invoiceNumber, string $itemName, int $quantity): void
-//    {
-//        $invoiceItem = new InvoiceItem($invoiceNumber);
-//        $invoiceItem->setItemName($itemName);
-//        $invoiceItem->setQuantity($quantity);
-//        $invoiceItem->setIsNew(true);
-//        // TODO: add this item to appropriate invoice
-//    }
-//
-//    public function removeItem(int $invoiceNumber, int $itemId): void
-//    {
-//        // TODO: Implement removeItem() method.
-//    }
 
 
 }

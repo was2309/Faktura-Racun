@@ -112,8 +112,4 @@ class InvoiceController
         $this->invoiceService->delete($invoiceID, $invoiceNumber);
     }
 
-
-
-
-
 }
