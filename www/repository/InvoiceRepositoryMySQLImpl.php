@@ -15,7 +15,7 @@ class InvoiceRepositoryMySQLImpl implements InvoiceRepository
         $invoiceDate = $invoice->getDate();
         $invoiceOrganization = $invoice->getOrganization();
 
-        if(!$this->checkIfExists($invoiceNumber)){
+        if($this->checkIfExists($invoiceNumber)){
             echo "Faktura sa navedenim brojem već postoji!";
             return;
         }
@@ -113,28 +113,31 @@ class InvoiceRepositoryMySQLImpl implements InvoiceRepository
         $conn = DBConnection::getInstance()->connect();
         $conn->autocommit(false);
         $conn->begin_transaction();
+        $inv = new Invoice();
+        $invoiceNumber = $invoice->getInvoiceNumber();
+        if(!$this->checkIfExists($invoiceNumber)){
+            echo "Tražena faktura ne postoji! ";
+            return $inv;
+        }
         try{
             $sql_invoice = "UPDATE invoice SET date=?, organization=? WHERE invoice_number=?";
             $stmt = $conn->prepare($sql_invoice);
             $invoiceId = $invoice->getInvoiceId();
-            $invoiceNumber = $invoice->getInvoiceNumber();
             $invoiceDate = $invoice->getDate();
             $invoiceOrganization = $invoice->getOrganization();
             $stmt->bind_param("ssi",$invoiceDate, $invoiceOrganization, $invoiceNumber);
             $stmt->execute();
 
 
-
-
             $items = $invoice->getItems();
-            $sql_insertItems = "INSERT INTO invoice_item (invoice_id, invoice_number, item_name, quantity) VALUES (?, ?, ?)";
+            $sql_insertItems = "INSERT INTO invoice_item (invoice_id, item_name, quantity) VALUES (?, ?, ?)";
             $stmt_insertItems = $conn->prepare($sql_insertItems);
             foreach ($items as $item){
                 if($item->isNew()){
                     $invoiceNum = $item->getInvoiceId();
                     $itemName = $item->getItemName();
                     $itemQuantity = $item->getQuantity();
-                    $stmt_insertItems->bind_param("iisi", $invoiceId, $invoiceNum,  $itemName, $itemQuantity);
+                    $stmt_insertItems->bind_param("isi", $invoiceId, $itemName, $itemQuantity);
                     $stmt_insertItems->execute();
                 }
             }
@@ -208,9 +211,9 @@ class InvoiceRepositoryMySQLImpl implements InvoiceRepository
 
         $result = $stmt->get_result();
         if($result->num_rows > 0){
-            return false;
+            return true;
         }
-        return true;
+        return false;
 
     }
 }

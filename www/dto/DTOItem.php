@@ -2,6 +2,7 @@
 
 class DTOItem
 {
+    private $itemId;
     private $invoiceId;
     private int $invoiceNumber;
     private $itemName;
@@ -14,6 +15,24 @@ class DTOItem
     {
         $this->forDelete = false;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getItemId()
+    {
+        return $this->itemId;
+    }
+
+    /**
+     * @param mixed $itemId
+     */
+    public function setItemId($itemId): void
+    {
+        $this->itemId = $itemId;
+    }
+
+
 
     /**
      * @return mixed

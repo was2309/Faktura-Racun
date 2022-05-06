@@ -94,6 +94,8 @@ class InvoiceController
 
         if($DTOInv->getInvoiceId()=== null){
             echo "Faktura nije ažurirana! ";
+        }else{
+            echo "Faktura je uspešno ažurirana! ";
         }
         return $DTOInv;
 

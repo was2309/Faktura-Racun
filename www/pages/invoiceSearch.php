@@ -203,13 +203,20 @@ if(isset($_POST['removeItemBtn'])){
 }
 
 if(isset($_POST['update'])){
-    if(!isset($_SESSION['invoice'])){
+    if(!isset($_SESSION['dtoInvoice'])){
                 echo '<script>alert("Molimo izaberite fakturu koju želite da izmenite!")</script>';
                 return;
     }
-
+    $newDate = $_POST['date'];
+    $newOrganization = $_POST['organization'];
     $DTOInvoice = unserialize($_SESSION['dtoInvoice'], ['allowed_class' => true]);
+    $DTOInvoice->setDate($newDate);
+    $DTOInvoice->setOrganization($newOrganization);
     $DTOInvoice = $invoiceController->update($DTOInvoice);
+    $_SESSION['invoiceNumber'] = $DTOInvoice->getInvoiceNumber();
+    $_SESSION['date'] = $DTOInvoice->getDate();
+    $_SESSION['organization'] = $DTOInvoice->getOrganization();
+    $_SESSION['dtoInvoice'] = serialize($DTOInvoice);
 }
 
 
