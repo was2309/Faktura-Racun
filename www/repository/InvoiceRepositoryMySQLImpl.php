@@ -6,7 +6,6 @@ include_once 'InvoiceRepository.php';
 class InvoiceRepositoryMySQLImpl implements InvoiceRepository
 {
 
-
     public function save(Invoice $invoice): void
     {
         $conn = DBConnection::getInstance()->connect();
@@ -134,7 +133,6 @@ class InvoiceRepositoryMySQLImpl implements InvoiceRepository
             $stmt_insertItems = $conn->prepare($sql_insertItems);
             foreach ($items as $item){
                 if($item->isNew()){
-                    $invoiceNum = $item->getInvoiceId();
                     $itemName = $item->getItemName();
                     $itemQuantity = $item->getQuantity();
                     $stmt_insertItems->bind_param("isi", $invoiceId, $itemName, $itemQuantity);
@@ -217,6 +215,5 @@ class InvoiceRepositoryMySQLImpl implements InvoiceRepository
             return true;
         }
         return false;
-
     }
 }

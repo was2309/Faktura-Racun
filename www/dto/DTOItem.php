@@ -32,8 +32,6 @@ class DTOItem
         $this->itemId = $itemId;
     }
 
-
-
     /**
      * @return mixed
      */
@@ -49,8 +47,6 @@ class DTOItem
     {
         $this->invoiceId = $invoiceId;
     }
-
-
 
     /**
      * @return int
@@ -123,8 +119,6 @@ class DTOItem
     {
         $this->forDelete = $forDelete;
     }
-
-
 
 
 }

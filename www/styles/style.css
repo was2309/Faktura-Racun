@@ -7,15 +7,10 @@
     font-family: 'Open Sans', sans-serif;
     color: #d6d6d6;
     font-weight: bolder;
-
-
-  /*  background-color: #e8e9eb;*/
 }
 
 body{
-    background: linear-gradient(180deg, rgba(1,0,24,1) 0%, rgba(55,55,73,1) 50%, rgba(1,0,24,1) 100%);
-    /*background: linear-gradient(180deg, rgba(1,0,24,1) 0%, rgba(55,55,73,1) 86%, rgba(45,45,54,1) 100%);*/
-    background-repeat: no-repeat;
+    background: linear-gradient(180deg, rgba(1, 0, 24, 1) 0%, rgba(55, 55, 73, 1) 50%, rgba(1, 0, 24, 1) 100%) no-repeat;
     width: 70%;
     margin: auto;
     padding-bottom: inherit;
@@ -23,7 +18,6 @@ body{
 .links{
     display: flex;
     justify-content: end;
-
 }
 .links a{
     margin-right: 2%;
@@ -39,7 +33,6 @@ body{
     color: #1f1f1f;
     text-decoration: none;
     background: #d6d6d6;
-
 }
 
 #invoiceForm{
@@ -74,7 +67,6 @@ body{
 
 #invoiceF{
     width: 25vw;
-
 }
 
 #invoiceNumber{
@@ -159,7 +151,6 @@ th, td{
 
 #searchInvoiceF{
     width: 20vw;
-
 }
 
 #updateInvoiceF{
@@ -174,7 +165,6 @@ form{
     border: #ede9e8 solid 2px;
     border-radius: 2rem;
     text-align: center;
-
 }
 
 .input_group{
@@ -185,7 +175,6 @@ form{
     flex-wrap:wrap;
     margin-left: auto;
     margin-right: auto;
-
 }
 
 .input_group input{
@@ -232,8 +221,6 @@ button:hover{
 .save_invoice{
     width: 12rem;
     height: 3rem;
-    /*margin-left: auto;*/
-    /*margin-right: auto;*/
 }
 
 .save_invoice_button{
@@ -268,4 +255,3 @@ button:hover{
 .fa-times:hover{
     color: #fa1100;
 }
-

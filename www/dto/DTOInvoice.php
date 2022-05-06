@@ -34,8 +34,6 @@ class DTOInvoice
         $this->invoiceId = $invoiceId;
     }
 
-
-
     /**
      * @return int
      */

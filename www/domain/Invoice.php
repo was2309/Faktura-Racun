@@ -33,25 +33,6 @@ class Invoice
         $this->invoiceId = $invoiceId;
     }
 
-//    public function __serialize(): array
-//    {
-//        return [
-//          'invoiceNumber'=> $this->invoiceNumber,
-//          'date'=>$this->date,
-//          'organization'=>$this->organization
-//        ];
-//    }
-//
-//
-//    public function __unserialize(array $data): void
-//    {
-//        $this->invoiceNumber = $data['invoiceNumber'];
-//        $this->date = $data['date'];
-//        $this->organization = $data['organization'];
-//    }
-
-
-
     public function getInvoiceNumber()
     {
         return $this->invoiceNumber;
@@ -101,7 +82,6 @@ class Invoice
         }
         foreach ($this->items as $i){
             if($i == $item) {
-//               echo '<script>alert("Stavka vec postoji!")</script>';
                 return;
             }
             if($i->getItemName() === $item->getItemName() && $i->getQuantity()!== $item->getQuantity()){

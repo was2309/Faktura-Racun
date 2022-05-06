@@ -1,6 +1,5 @@
 <?php
     session_start();
-
 ?>
 
 <!doctype html>
@@ -18,112 +17,6 @@
 </head>
 <body>
 <?php
-//
-//
-//require_once '../domain/Invoice.php';
-//require_once '../domain/InvoiceItem.php';
-//include_once '../repository/createdb.php';
-//include_once '../repository/createTables.php';
-//include '../repository/DBConnection.php';
-//
-//
-//$invoice = new Invoice();
-//
-//if (isset($_SESSION['invoice'])) {
-//    $invoice = unserialize($_SESSION['invoice'], ['allowed_class' => true]);
-//}
-//
-//if (isset($_POST['add'])) {
-//    if(empty($_POST['invoiceNumber']) || $_POST['date'] === null || $_POST['organization']===''){
-//        echo "<script>alert('Podaci o fakturi nisu validni!')</script>";
-//    } else {
-//        $invoice->setInvoiceNumber($_POST['invoiceNumber']);
-//        $invoice->setDate($_POST['date']);
-//        $invoice->setOrganization($_POST['organization']);
-//
-//        $_SESSION['invoice'] = serialize($invoice);
-//    }
-//}
-//
-//
-//if (isset($_POST['saveItem'])) {
-//    if(!isset($_SESSION['invoice']) || $invoice->getInvoiceNumber()===null){
-//        echo "<script>alert('Molimo unesite podatke o fakturi da biste uneli stavke!')</script>";
-//
-//    }else {
-//        $item = new InvoiceItem($invoice->getInvoiceNumber());
-//
-//        if ($_POST['itemName'] === '' || empty($_POST['quantity'])) {
-//            echo '<script>alert("Podaci o stavci nisu validni!")</script>';
-//        } else {
-//            $item->setItemName($_POST['itemName']);
-//            $item->setQuantity($_POST['quantity']);
-//
-//            $invoice->addNewItem($item);
-//
-//            $_SESSION['invoice'] = serialize($invoice);
-//        }
-//    }
-//}
-//
-//if(isset($_POST['removeItemBtn'])){
-//    $items = $invoice->getItems();
-//    foreach($items as $item){
-//        if($item->getItemName() === $_POST['removeItemBtn']){
-//            $invoice->removeItem($item);
-//            $_SESSION['invoice'] = serialize($invoice);
-//            break;
-//        }
-//    }
-//}
-//
-//
-//if(isset($_POST['save'])){
-//    if(!isset($_SESSION['invoice'])){
-//        echo '<script>alert("Molimo dodajte fakturu!")</script>';
-//    }else{
-//
-//        $conn->autocommit(FALSE);
-//
-//        $invoice = unserialize($_SESSION['invoice'], ['allowed_class' => Invoice::class]);
-//        $sql_invoice = "INSERT INTO invoice (invoice_number, date, organization) VALUES (?, ?, ?)";
-//        $stmt = $conn->prepare($sql_invoice);
-//        $invoiceNumber = $invoice->getInvoiceNumber();
-//        $invoiceDate = $invoice->getDate();
-//        $invoiceOrganization = $invoice->getOrganization();
-//        $stmt->bind_param("iss", $invoiceNumber, $invoiceDate, $invoiceOrganization);
-//        $stmt->execute();
-//
-//        $conn->begin_transaction();
-//
-//        try{
-//            $items = $invoice->getItems();
-//            $sql_items = "INSERT INTO invoice_item (invoice_number, item_name, quantity) VALUES (?, ?, ?) ";
-//            $stmt_items = $conn->prepare($sql_items);
-//            foreach ($items as $item){
-//                $invoiceNum = $item->getInvoiceNumber();
-//                $itemName = $item->getItemName();
-//                $itemQuantity = $item->getQuantity();
-//                $stmt_items->bind_param("isi",$invoiceNum,  $itemName, $itemQuantity);
-//                $stmt_items->execute();
-//            }
-//
-//            $conn->commit();
-//            echo "Uspešno dodato u bazu!";
-//
-//        }catch (mysqli_sql_exception $exception){
-//            $conn->rollback();
-//            echo "Greška prilikom dodavanja fakture!";
-//            throw $exception;
-//        } finally {
-//            $conn->close();
-//            session_unset();
-//            $_POST = array();
-//        }
-//
-//    }
-//}
-
 include_once '../controller/InvoiceController.php';
 include_once '../dto/DTOInvoice.php';
 include_once '../dto/DTOItem.php';
@@ -348,7 +241,6 @@ if(isset($_POST['save'])){
 
     </div>
 </div>
-
 
 </body>
 </html>

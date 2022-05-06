@@ -14,15 +14,6 @@
         echo ConsoleLog::console_log("Connection is successfull!", true);
     }
 
-
-//    $conn = new mysqli($servername, $username, $password, $dbname);
-//
-//    if($conn->connect_error){
-//        die("Connection failed: " . $conn->connect_error);
-//    }else{
-//        echo "Connection is successfull! ";
-//    }
-
     $query_invoice = "CREATE TABLE invoice(
                         invoice_id int(11) NOT NULL AUTO_INCREMENT,
                         invoice_number int(11) NOT NULL,

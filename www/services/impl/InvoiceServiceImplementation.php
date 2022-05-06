@@ -31,7 +31,6 @@ class InvoiceServiceImplementation implements InvoiceService
         $invoice = $this->DTOToInvoice($DTOInvoice);
 
         $inv = $this->invoiceRepository->update($invoice);
-        //$invID = $inv->getInvoiceId();
 
         return $this->InvoiceToDTO($inv);
     }
@@ -87,6 +86,5 @@ class InvoiceServiceImplementation implements InvoiceService
         $invoice->setItems($items);
         return $invoice;
     }
-
 
 }
