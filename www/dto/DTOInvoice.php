@@ -103,11 +103,12 @@ class DTOInvoice
             return;
         }
         foreach ($this->items as $i){
-            if($i == $item) {
-//               echo '<script>alert("Stavka vec postoji!")</script>';
-                return;
-            }
-            if($i->getItemName() === $item->getItemName() && $i->getQuantity()!== $item->getQuantity()){
+//            if($i == $item) {
+////               echo '<script>alert("Stavka vec postoji!")</script>';
+//                return;
+//            }
+//            if($i->getItemName() === $item->getItemName() && $i->getQuantity()!== $item->getQuantity()){
+            if($i->getItemName() === $item->getItemName()){
                 $i->setQuantity($i->getQuantity()+$item->getQuantity());
                 return;
             }
@@ -116,9 +117,7 @@ class DTOInvoice
     }
 
     public function removeItem(DTOItem $item){
-        if($item->getItemName() === null || $item->getQuantity() === null){
-            return;
-        }
+
         $count = 0;
         foreach ($this->items as $i){
             if($item->getItemName() === $i->getItemName()){

@@ -1,5 +1,6 @@
 <?php
 include_once '../styles/ConsoleLog.php';
+include_once 'DotEnv.php';
 class DBConnection{
 
     public static ?DBConnection $instance = null;
@@ -17,10 +18,11 @@ class DBConnection{
     }
 
     public function connect(){
-        $servername = "database";
-        $username = "root";
-        $password = "root";
-        $dbname = "invoices";
+        (new DotEnv(__DIR__.'/db.env'))->load();
+        $servername = getenv('SERVERNAME');
+        $username = getenv('USERNAME');
+        $password = getenv('PASSWORD');
+        $dbname = getenv('DB_NAME');
 
         $conn = new mysqli($servername, $username, $password, $dbname);
 
@@ -28,7 +30,7 @@ class DBConnection{
             die("Connection failed: " . $conn->connect_error);
 
         }else{
-            echo ConsoleLog::console_log("Connection is successfull!", true);
+//             ConsoleLog::console_log("Connection is successful!", true);
         }
         return $conn;
 

@@ -20,7 +20,7 @@ class InvoiceServiceImplementation implements InvoiceService
         session_unset();
     }
 
-    public function findById(int $invoiceNumber): DTOInvoice
+    public function findById(int $invoiceNumber): ?DTOInvoice
     {
        $invoice = $this->invoiceRepository->findById($invoiceNumber);
         return $this->InvoiceToDTO($invoice);
@@ -40,7 +40,11 @@ class InvoiceServiceImplementation implements InvoiceService
         $this->invoiceRepository->delete($invoiceId, $invoiceNumber);
     }
 
-    public function InvoiceToDTO(Invoice $invoice):DTOInvoice{
+    public function InvoiceToDTO(?Invoice $invoice):?DTOInvoice{
+        if($invoice === null){
+            return null;
+        }
+
         $DTOInvoice = new DTOInvoice();
         if($invoice->getInvoiceNumber() !== null){
             $DTOInvoice->setInvoiceId($invoice->getInvoiceId());

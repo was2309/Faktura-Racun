@@ -10,11 +10,11 @@ class Invoice
     /**
      * @var InvoiceItem[]
      */
-    private array $items = array();
+    private array $items;
 
     public function __construct()
     {
-
+        $this->items = array();
     }
 
     /**
@@ -81,9 +81,9 @@ class Invoice
             return;
         }
         foreach ($this->items as $i){
-            if($i == $item) {
-                return;
-            }
+//            if($i == $item) {
+//                return;
+//            }
             if($i->getItemName() === $item->getItemName() && $i->getQuantity()!== $item->getQuantity()){
                 $i->setQuantity($i->getQuantity()+$item->getQuantity());
                 return;
