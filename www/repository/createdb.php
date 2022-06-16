@@ -1,6 +1,6 @@
 <?php
 
-    include_once '../styles/ConsoleLog.php';
+
     include_once 'DotEnv.php';
 
     (new DotEnv(__DIR__.'/db.env'))->load();

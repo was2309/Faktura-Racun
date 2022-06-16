@@ -1,5 +1,5 @@
 <?php
-include_once '../styles/ConsoleLog.php';
+
 include_once 'DotEnv.php';
 class DBConnection{
 
